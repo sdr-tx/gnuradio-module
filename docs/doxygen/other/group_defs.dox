@@ -1,0 +1,7 @@
+/*!
+ * \defgroup block GNU Radio MERCURIAL_SDR C++ Signal Processing Blocks
+ * \brief All C++ blocks that can be used from the MERCURIAL_SDR GNU Radio
+ *        module are listed here or in the subcategories below.
+ *
+ */
+

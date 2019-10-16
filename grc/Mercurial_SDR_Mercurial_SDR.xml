@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<block>
+  <name>Mercurial_SDR</name>
+  <key>Mercurial_SDR</key>
+  <category>[Mercurial_SDR]</category>
+  <import>import Mercurial_SDR</import>
+  <make>Mercurial_SDR.Mercurial_SDR($bits_key)</make>
+<callback>set_modulation($bits_key)</callback>
+ <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Modulation</name>
+    <key>modulation_key</key>
+    <type>enum</type>
+    <option>
+      <name>AM</name>
+      <key>am_key</key>
+    </option>
+    <option>
+      <name>OOK</name>
+      <key>ook_key</key>
+    </option>
+    <option>
+      <name>BPSK</name>
+      <key>bpsk_key</key>
+    </option>
+    <option>
+      <name>QPSK</name>
+      <key>qpsk_key</key>
+    </option>
+    <option>
+      <name>PAM</name>
+      <key>pam_key</key>
+    </option>
+  </param>
+  <param>
+    <name>Bits</name>
+    <key>bits_key</key>
+    <type>float</type>
+  </param>
+
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>

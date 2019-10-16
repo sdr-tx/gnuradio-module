@@ -1,0 +1,11 @@
+This is the Mercurial_SDR-write-a-block package meant as a guide to building
+out-of-tree packages. To use the Mercurial_SDR blocks, the Python namespaces
+is in 'Mercurial_SDR', which is imported as:
+
+    import Mercurial_SDR
+
+See the Doxygen documentation for details about the blocks available
+in this package. A quick listing of the details can be found in Python
+after importing by using:
+
+    help(Mercurial_SDR)
