@@ -36,8 +36,6 @@ class Mercurial_SDR(gr.sync_block):
             in_sig=[numpy.float32],
             out_sig=[numpy.float32])
 
-        subprocess.call(['make','-C',path,'foo='+mod_type,target])
-
         # subprocess.call('icepll')
 
         #ser = serial.Serial('/dev/pts/13')  # open serial port
@@ -55,8 +53,8 @@ class Mercurial_SDR(gr.sync_block):
         parameter01 = 1;
         parameter02 = 255;
         parameter03 = 8;
-        modulatorParametersGenerator(parameter01, parameter02, parameter03)
-        programFPGA("../../", modulation, "")
+        self.modulatorParametersGenerator(parameter01, parameter02, parameter03)
+        self.programFPGA("../../syn", "all", modulation)
 
 
     def work(self, input_items, output_items):
@@ -78,8 +76,8 @@ class Mercurial_SDR(gr.sync_block):
     # This function runs the Makefile to make the synthesys, place and route and
     # programmation of the FPGA
     ####
-    def programFPGA(self, pathMakefileHDL, modulator, target):
-        subprocess.call(['make', '-C' ,pathMakefileHDL ,'MOD=' + modulator, target])
+    def programFPGA(self, pathMakefileHDL, target, modulator):
+        subprocess.call(['make', '-C', pathMakefileHDL, target, 'MOD=' + modulator])
 
     ####
     # modulatorParametersGenerator
