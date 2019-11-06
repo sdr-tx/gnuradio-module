@@ -36,8 +36,9 @@ class Mercurial_SDR(gr.sync_block):
             in_sig=[numpy.float32],
             out_sig=[numpy.float32])
 
+        subprocess.call(['make','-C',path,'foo='+mod_type,target])
+
         # subprocess.call('icepll')
-        # subprocess.call('echo "HOLA\n"', shell=True)
 
         #ser = serial.Serial('/dev/pts/13')  # open serial port
         #print(ser.name)         # check which port was really used
@@ -49,21 +50,13 @@ class Mercurial_SDR(gr.sync_block):
         #self.modulation = modulation_key
         #print(self.modulation)
         #print("MOD")
-        var ='hola'
-        value = 10
 
-        # open file and write header
-        f = open("/home/agustin/Dropbox/0_2019/PF_2019/sdr-tx/hdl/inc/module_params.v","w+")
-        f.write("`ifndef __PROJECT_CONFIG_V\n`define __PROJECT_CONFIG_V\n\n")
-        f.write("`define AM_CLKS_PER_PWM_STEP %d\n" % 1)
-        f.write("`define AM_PWM_STEP_PER_SAMPLE %d\n" % 63)
-        f.write("`define AM_BITS_PER_SAMPLE %d\n" % bits_key)
-        f.write("\n`endif")
-        f.close()
-
-        subprocess.call('/home/agustin/Dropbox/0_2019/PF_2019/sdr-tx/hdl/syn/run_in_docker.sh make')
-        subprocess.call('/home/agustin/Dropbox/0_2019/PF_2019/sdr-tx/hdl/syn/run_in_docker.sh make prog')
-
+        modulation = "am";
+        parameter01 = 1;
+        parameter02 = 255;
+        parameter03 = 8;
+        modulatorParametersGenerator(parameter01, parameter02, parameter03)
+        programFPGA("../../", modulation, "")
 
 
     def work(self, input_items, output_items):
@@ -74,9 +67,34 @@ class Mercurial_SDR(gr.sync_block):
 
         return len(output_items[0])
 
-    def set_modulation(self,modulation_key):
+    def set_modulation(self, modulation_key):
         self.modulation = modulation_key
         print("modulationaaaa")
         print(self.modulation)
+
+    ####
+    # programFPGA
+    #
+    # This function runs the Makefile to make the synthesys, place and route and
+    # programmation of the FPGA
+    ####
+    def programFPGA(self, pathMakefileHDL, modulator, target):
+        subprocess.call(['make', '-C' ,pathMakefileHDL ,'MOD=' + modulator, target])
+
+    ####
+    # modulatorParametersGenerator
+    #
+    # Used to write the necessary defines to build every modulator
+    ####
+    def modulatorParametersGenerator(self, parameter01, parameter02, parameter03):
+        # open file and write header
+        f = open("../../inc/module_params.v","w+")
+        f.write("`ifndef __PROJECT_CONFIG_V\n`define __PROJECT_CONFIG_V\n\n")
+        f.write("`define PARAMETER01 %d\n" % parameter01)
+        f.write("`define PARAMETER02 %d\n" % parameter02)
+        f.write("`define PARAMETER03 %d\n" % parameter03)
+        f.write("\n`endif")
+        f.close()
+
 
         
