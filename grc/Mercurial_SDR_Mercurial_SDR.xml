@@ -4,7 +4,7 @@
   <key>Mercurial_SDR</key>
   <category>[Mercurial_SDR]</category>
   <import>import Mercurial_SDR</import>
-  <make>Mercurial_SDR.Mercurial_SDR($bits_key)</make>
+  <make>Mercurial_SDR.Mercurial_SDR($modulation_key,$bits_key,$clk_key)</make>
 <callback>set_modulation($bits_key)</callback>
  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
@@ -14,33 +14,65 @@
   <param>
     <name>Modulation</name>
     <key>modulation_key</key>
-    <type>enum</type>
+    <type>string</type>
     <option>
       <name>AM</name>
-      <key>am_key</key>
+      <key>am</key>
     </option>
     <option>
       <name>OOK</name>
-      <key>ook_key</key>
+      <key>ook</key>
     </option>
     <option>
       <name>BPSK</name>
-      <key>bpsk_key</key>
+      <key>psk</key>
     </option>
     <option>
       <name>QPSK</name>
-      <key>qpsk_key</key>
+      <key>qpsk</key>
     </option>
     <option>
       <name>PAM</name>
-      <key>pam_key</key>
+      <key>pam</key>
     </option>
   </param>
+
+
   <param>
-    <name>Bits</name>
+    <name>Bits/Symbol</name>
     <key>bits_key</key>
-    <type>float</type>
+    <type>int</type>
   </param>
+
+
+  <param>
+    <name>Clk/Symbol</name>
+    <key>clk_key</key>
+    <type>int</type>
+  </param>
+
+
+  <param>
+    <name>Type PAM</name>
+    <key>pamtype_key</key>
+    <type>string</type>
+    <hide>#if $modulation_key() == "pam_key" then 'none' else 'all'#</hide>
+
+    <option>
+      <name>μ-Law</name>
+      <key>ulaw</key>
+    </option>
+
+    <option>
+      <name>A-Law</name>
+      <key>alaw</key>
+    </option>
+  </param>
+
+
+
+
+
 
   <!-- Make one 'sink' node per input. Sub-nodes:
        * name (an identifier for the GUI)

@@ -38,7 +38,7 @@
     </param>
     <param>
       <key>generate_options</key>
-      <value>qt_gui</value>
+      <value>wx_gui</value>
     </param>
     <param>
       <key>hier_block_src_path</key>
@@ -112,11 +112,15 @@
     <key>Mercurial_SDR</key>
     <param>
       <key>bits_key</key>
-      <value>8</value>
+      <value>6</value>
     </param>
     <param>
       <key>alias</key>
       <value></value>
+    </param>
+    <param>
+      <key>clk_key</key>
+      <value>4</value>
     </param>
     <param>
       <key>comment</key>
@@ -132,7 +136,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(240, 164)</value>
+      <value>(304, 156)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -152,7 +156,11 @@
     </param>
     <param>
       <key>modulation_key</key>
-      <value>am_key</value>
+      <value>psk</value>
+    </param>
+    <param>
+      <key>pamtype_key</key>
+      <value>alaw_key</value>
     </param>
   </block>
   <block>
@@ -179,7 +187,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(384, 176)</value>
+      <value>(520, 176)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -226,7 +234,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(112, 176)</value>
+      <value>(136, 176)</value>
     </param>
     <param>
       <key>_rotation</key>

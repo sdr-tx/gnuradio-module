@@ -23,6 +23,8 @@ import numpy
 import subprocess
 import shlex
 import serial
+#from math import pi, sin
+#import argparse
 
 from gnuradio import gr
 
@@ -30,7 +32,7 @@ class Mercurial_SDR(gr.sync_block):
     """
     docstring for block Mercurial_SDR
     """
-    def __init__(self,bits_key):
+    def __init__(self,modulation_key,bits_key,clk_key):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[numpy.float32],
@@ -49,12 +51,27 @@ class Mercurial_SDR(gr.sync_block):
         #print(self.modulation)
         #print("MOD")
 
-        modulation = "am";
+        modulation  = "am";
         parameter01 = 1;
         parameter02 = 255;
         parameter03 = 8;
+
+        modulation  = modulation_key;
+        parameter01 = bits_key;
+        parameter02 = clk_key;
+        parameter03 = 0;
+
         self.modulatorParametersGenerator(parameter01, parameter02, parameter03)
         self.programFPGA("../../syn", "all", modulation)
+
+
+
+
+        data = [6 0]#, 3, 9, 12] 
+
+
+        tty=serial.Serial('/dev/ttyUSB0')
+        
 
 
     def work(self, input_items, output_items):
@@ -62,12 +79,14 @@ class Mercurial_SDR(gr.sync_block):
         out = output_items[0]
         # <+signal processing here+>
         out[:] = in0
+        tty.write(data)
 
         return len(output_items[0])
 
+
     def set_modulation(self, modulation_key):
         self.modulation = modulation_key
-        print("modulationaaaa")
+        print("Modulacion seleccionada:")
         print(self.modulation)
 
     ####
@@ -77,6 +96,7 @@ class Mercurial_SDR(gr.sync_block):
     # programmation of the FPGA
     ####
     def programFPGA(self, pathMakefileHDL, target, modulator):
+        subprocess.call(['make', '-C', pathMakefileHDL,'clean'])
         subprocess.call(['make', '-C', pathMakefileHDL, target, 'MOD=' + modulator])
 
     ####
@@ -95,4 +115,4 @@ class Mercurial_SDR(gr.sync_block):
         f.close()
 
 
-        
+
