@@ -32,11 +32,12 @@ class Mercurial_SDR(gr.sync_block):
     """
     docstring for block Mercurial_SDR
     """
-    def __init__(self,modulation_key,bits_key,clk_key):
+    def __init__(self, modulation_key, bits_key, clk_key):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[numpy.float32],
-            out_sig=[numpy.float32])
+            out_sig="")
+#            out_sig=[numpy.float32])
 
         # subprocess.call('icepll')
 
@@ -61,27 +62,28 @@ class Mercurial_SDR(gr.sync_block):
         parameter02 = clk_key;
         parameter03 = 0;
 
-        self.modulatorParametersGenerator(parameter01, parameter02, parameter03)
-        self.programFPGA("../../syn", "all", modulation)
+#        self.modulatorParametersGenerator(parameter01, parameter02, parameter03)
+#        self.programFPGA("../../syn", "all", modulation)
 
+#        data = [6 0]#, 3, 9, 12] 
 
-
-
-        data = [6 0]#, 3, 9, 12] 
-
-
-        tty=serial.Serial('/dev/ttyUSB0')
+        self.tty = serial.Serial('/dev/ttyUSB1')
         
 
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
-        out = output_items[0]
-        # <+signal processing here+>
-        out[:] = in0
-        tty.write(data)
+        for i in range(45):
+            b = numpy.uint8(in0*128-128)
+            self.tty.write(b.tobytes())
+        # print(type(in0),  " | ", in0)
+        # out = output_items[0]
+        # # <+signal processing here+>
+        # out[:] = in0
+        # tty.write(input_items)
+        #return
 
-        return len(output_items[0])
+        return len(input_items[0])
 
 
     def set_modulation(self, modulation_key):
