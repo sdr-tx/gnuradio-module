@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Tue Dec 10 01:07:07 2019
+# Generated: Wed Oct 16 00:41:54 2019
 ##################################################
 
 from distutils.version import StrictVersion
@@ -68,13 +68,15 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.blocks_wavfile_source_0 = blocks.wavfile_source('/home/agustin/Descargas/pf/highway_intro8k.wav', True)
-        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('am',123,456)
+        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*1)
+        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR(8)
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_wavfile_source_0, 0), (self.Mercurial_SDR_0, 0))
+        self.connect((self.Mercurial_SDR_0, 0), (self.blocks_null_sink_0, 0))
+        self.connect((self.blocks_null_source_0, 0), (self.Mercurial_SDR_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "top_block")

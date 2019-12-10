@@ -73,9 +73,9 @@ class Mercurial_SDR(gr.sync_block):
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
-        for i in range(45):
-            b = numpy.uint8(in0*128-128)
-            self.tty.write(b.tobytes())
+        # for i in range(45):
+        b = numpy.uint8(in0*128-128)
+        self.tty.write(b.tobytes())
         # print(type(in0),  " | ", in0)
         # out = output_items[0]
         # # <+signal processing here+>
