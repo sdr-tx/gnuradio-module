@@ -14,7 +14,7 @@
   <param>
     <name>Modulation</name>
     <key>modulation_key</key>
-    <value>"am"</value>
+    <value>am</value>
     <type>string</type>
 
       <option>
@@ -28,14 +28,10 @@
       </option>
 
       <option>
-        <name>BPSK</name>
+        <name>PSK</name>
         <key>psk</key>
       </option>
 
-      <option>
-        <name>QPSK</name>
-        <key>qpsk</key>
-      </option>
 
       <option>
         <name>PAM</name>
@@ -46,12 +42,43 @@
 
 
 
+  <param>
+    <name>Type</name>
+    <key>psk_key</key>
+    <value>bpsk</value>
+    <type>string</type>
+
+    <hide>#if $modulation_key() == "psk" then 'none' else 'all'#</hide>
+
+      <option>
+        <name>BPSK</name>
+        <key>bpsk</key>
+      </option>
+      
+
+      <option>
+        <name>QPSK</name>
+        <key>qpsk</key>
+      </option>
+
+      <option>
+        <name>8PSK</name>
+        <key>8psk</key>
+      </option>
+      
+
+  </param>
+
+
+
+
 
 <!--//////////////////////////////////////////////////////////////////////-->
 
   <param>
     <name>Carrier Frequency</name>
     <key>fc_key</key>
+    <value>1000000</value>
     <type>int</type>
     <hide>#if $modulation_key() == "pam" then 'all' else 'none'#</hide>
 
@@ -64,6 +91,7 @@
   <param>
     <name>Sampling Frequency</name>
     <key>fs_key</key>
+    <value>44100</value>
     <type>int</type>
 
   </param>
@@ -98,6 +126,7 @@
     <param>
     <name>Type PAM</name>
     <key>pammethod_key</key>
+    <value>flat_key</value>
     <type>string</type>
     <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
 
@@ -117,6 +146,7 @@
   <param>
     <name>Method PAM</name>
     <key>pamtype_key</key>
+    <value>ulaw</value>
     <type>string</type>
     <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
 
