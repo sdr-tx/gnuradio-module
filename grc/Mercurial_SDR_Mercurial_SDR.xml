@@ -4,7 +4,7 @@
   <key>Mercurial_SDR</key>
   <category>[Mercurial_SDR]</category>
   <import>import Mercurial_SDR</import>
-  <make>Mercurial_SDR.Mercurial_SDR($modulation_key,$bits_key,$clk_key)</make>
+  <make>Mercurial_SDR.Mercurial_SDR($modulation_key,$fc_key,$fs_key,$bits_key,$clk_key,$pammethod_key,$pamtype_key,$duty_key)</make>
 <callback>set_modulation($bits_key)</callback>
  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
@@ -14,49 +14,111 @@
   <param>
     <name>Modulation</name>
     <key>modulation_key</key>
+    <value>"am"</value>
     <type>string</type>
-    <option>
-      <name>AM</name>
-      <key>am</key>
-    </option>
-    <option>
-      <name>OOK</name>
-      <key>ook</key>
-    </option>
-    <option>
-      <name>BPSK</name>
-      <key>psk</key>
-    </option>
-    <option>
-      <name>QPSK</name>
-      <key>qpsk</key>
-    </option>
-    <option>
-      <name>PAM</name>
-      <key>pam</key>
-    </option>
+
+      <option>
+        <name>AM</name>
+        <key>am</key>
+      </option>
+
+      <option>
+        <name>OOK</name>
+        <key>ook</key>
+      </option>
+
+      <option>
+        <name>BPSK</name>
+        <key>psk</key>
+      </option>
+
+      <option>
+        <name>QPSK</name>
+        <key>qpsk</key>
+      </option>
+
+      <option>
+        <name>PAM</name>
+        <key>pam</key>
+      </option>
+
   </param>
+
+
+
+
+<!--//////////////////////////////////////////////////////////////////////-->
+
+  <param>
+    <name>Carrier Frequency</name>
+    <key>fc_key</key>
+    <type>int</type>
+    <hide>#if $modulation_key() == "pam" then 'all' else 'none'#</hide>
+
+
+  </param>
+
+
+<!--//////////////////////////////////////////////////////////////////////-->
+
+  <param>
+    <name>Sampling Frequency</name>
+    <key>fs_key</key>
+    <type>int</type>
+
+  </param>
+
+ <!--/////////////////////////////////////////////////////////////////////-->
+
 
 
   <param>
     <name>Bits/Symbol</name>
     <key>bits_key</key>
     <type>int</type>
+    <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" then 'all' else 'none'#</hide>
+
   </param>
+ <!--/////////////////////////////////////////////////////////////////////-->
 
 
   <param>
     <name>Clk/Symbol</name>
     <key>clk_key</key>
+    <value>2</value>
     <type>int</type>
+    <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" then 'all' else 'none'#</hide>
+
+  </param>
+
+ <!--/////////////////////////////////////////////////////////////////////-->
+
+
+
+    <param>
+    <name>Type PAM</name>
+    <key>pammethod_key</key>
+    <type>string</type>
+    <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
+
+      <option>
+        <name>Flat Top</name>
+        <key>flat_key</key>
+      </option>
+
+      <option>
+        <name>Natural</name>
+        <key>natural_key</key>
+      </option>
   </param>
 
 
+
   <param>
-    <name>Type PAM</name>
+    <name>Method PAM</name>
     <key>pamtype_key</key>
     <type>string</type>
-    <hide>#if $modulation_key() == "pam_key" then 'none' else 'all'#</hide>
+    <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
 
     <option>
       <name>μ-Law</name>
@@ -71,7 +133,30 @@
 
 
 
+ <!--/////////////////////////////////////////////////////////////////////-->
 
+
+  <param>
+
+    <name>Duty Cycle(%)</name>
+    <key>duty_key</key>
+    <value>50</value>
+    <type>int</type>
+    <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
+
+  </param>
+
+<!--/////////////////////////////////////////////////////////////////////-->
+
+
+ <!-- <param>
+    <name>Duty Cycle</name>
+    <key>duty_key</key>
+    <value>2</value>
+    <type>int</type>
+    <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" then 'all' else 'none'#</hide>
+
+  </param> -->
 
 
   <!-- Make one 'sink' node per input. Sub-nodes:
@@ -83,4 +168,10 @@
     <name>in</name>
     <type>float</type>
   </sink>
+
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+
 </block>

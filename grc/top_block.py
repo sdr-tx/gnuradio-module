@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Wed Oct 16 00:41:54 2019
+# Generated: Wed Dec 11 23:17:59 2019
 ##################################################
 
 from distutils.version import StrictVersion
@@ -70,7 +70,7 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*1)
-        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR(8)
+        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('psk',2,2,8,2,'','',50)
 
         ##################################################
         # Connections

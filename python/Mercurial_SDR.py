@@ -32,7 +32,7 @@ class Mercurial_SDR(gr.sync_block):
     """
     docstring for block Mercurial_SDR
     """
-    def __init__(self, modulation_key, bits_key, clk_key):
+    def __init__(self, modulation_key, fc_key,fs_key,bits_key,clk_key,pammethod_key,pamtype_key,duty_key):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[numpy.float32],

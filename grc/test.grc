@@ -119,12 +119,24 @@
       <value></value>
     </param>
     <param>
+      <key>fc_key</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>clk_key</key>
+      <value>2</value>
+    </param>
+    <param>
       <key>comment</key>
       <value></value>
     </param>
     <param>
       <key>affinity</key>
       <value></value>
+    </param>
+    <param>
+      <key>duty_key</key>
+      <value>50</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -147,12 +159,24 @@
       <value>0</value>
     </param>
     <param>
+      <key>pamtype_key</key>
+      <value></value>
+    </param>
+    <param>
       <key>minoutbuf</key>
       <value>0</value>
     </param>
     <param>
       <key>modulation_key</key>
-      <value>am_key</value>
+      <value>psk</value>
+    </param>
+    <param>
+      <key>fs_key</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>pammethod_key</key>
+      <value></value>
     </param>
   </block>
   <block>
