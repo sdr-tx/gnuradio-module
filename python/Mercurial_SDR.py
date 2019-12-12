@@ -32,7 +32,7 @@ class Mercurial_SDR(gr.sync_block):
     """
     docstring for block Mercurial_SDR
     """
-    def __init__(self, modulation_key, fc_key,fs_key,bits_key,clk_key,pammethod_key,pamtype_key,duty_key):
+    def __init__(self, modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[numpy.float32],
@@ -52,18 +52,105 @@ class Mercurial_SDR(gr.sync_block):
         #print(self.modulation)
         #print("MOD")
 
-        modulation  = "am";
+        syntethize = True
+
+        modulation  = modulation_key;
+        modulation_psk  = psk_key;
         parameter01 = 1;
         parameter02 = 255;
         parameter03 = 8;
+        parameter04 = 4;
 
-        modulation  = modulation_key;
-        parameter01 = bits_key;
-        parameter02 = clk_key;
-        parameter03 = 0;
+        try:
+            f = open("check_syn","r")
+            rl = f.readline()
+            current = "{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key)
+            
+            if (rl == current):
+                syntethize = False
+            else:
+              f.close()
+              f = open("check_syn","w+")
+              f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key))
 
-#        self.modulatorParametersGenerator(parameter01, parameter02, parameter03)
-#        self.programFPGA("../../syn", "all", modulation)
+                
+
+        except:
+            print("Debug EXCEPT")
+
+            f = open("check_syn","w+")
+            f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key))
+            f.close()
+
+     #  HDL code
+         #.PARAMETER01    (`PARAMETER01),
+         #.PARAMETER02    (`PARAMETER02),
+         #.PARAMETER03    (`PARAMETER03),
+         #.PARAMETER04    (`PARAMETER04)
+
+         #/*  AM_CLKS_PER_PWM_STEP    1
+         # *  AM_PWM_STEP_PER_SAMPLE  255
+         # *  AM_BITS_PER_SAMPLE      8
+         # *  AM_REPEATED_SAMPLE      30
+         # */
+
+         #/*  AM_CLKS_PER_PWM_STEP    1
+         # *  AM_PWM_STEP_PER_SAMPLE  255
+         # *  AM_BITS_PER_SAMPLE      8
+         # *  AM_REPEATED_SAMPLE      30
+         # */
+
+         #/*  PSK_CLKS_PER_BIT        4
+         # *  PSK_BITS_PER_SYMBOL     4
+         # *
+         # *  PSK_REPEATED_SAMPLE     30
+         # */
+ 
+         #/*  PAM_CLKS_SAMPLING_FREQ  1200
+         # *  PAM_CLKS_PER_BCLK       12
+         # *  PAM_DATA_LENGHT         24
+         # *  
+         # */
+
+        if(syntethize == True): 
+
+            if(modulation == "am"):
+                parameter04 = numpy.round(clk_key/fs_key);
+                print("AM");
+    
+            elif(modulation =="ook"):
+                parameter02 = 2;
+                print("OOK");
+    
+            elif(modulation =="pam"):
+                parameter02 = 0;
+                parameter03 = 24;                               # bits del dac
+                print("PAM");
+    
+            elif(psk_key =="bpsk"):
+                parameter01 = clk_key;
+                parameter02 = 2;
+                parameter04 = numpy.round(clk_key/fs_key);
+                print("BPSK");
+    
+    
+    
+            elif(psk_key =="qpsk"):
+                parameter01 = clk_key;
+                parameter02 = 4;
+                parameter04 = numpy.round(clk_key/fs_key);
+                print("QPSK");
+    
+            elif(psk_key =="8psk"):
+                parameter01 = clk_key;
+                parameter02 = 8;
+                parameter04 = numpy.round(clk_key/fs_key);
+                print("8PSK");
+    
+    
+            self.modulatorParametersGenerator(parameter01, parameter02, parameter03,parameter04)
+            self.programFPGA("../../syn", "all", modulation)
+
 
 #        data = [6 0]#, 3, 9, 12] 
 
@@ -106,13 +193,14 @@ class Mercurial_SDR(gr.sync_block):
     #
     # Used to write the necessary defines to build every modulator
     ####
-    def modulatorParametersGenerator(self, parameter01, parameter02, parameter03):
+    def modulatorParametersGenerator(self, parameter01, parameter02, parameter03,parameter04):
         # open file and write header
         f = open("../../inc/module_params.v","w+")
         f.write("`ifndef __PROJECT_CONFIG_V\n`define __PROJECT_CONFIG_V\n\n")
         f.write("`define PARAMETER01 %d\n" % parameter01)
         f.write("`define PARAMETER02 %d\n" % parameter02)
         f.write("`define PARAMETER03 %d\n" % parameter03)
+        f.write("`define PARAMETER04 %d\n" % parameter04)
         f.write("\n`endif")
         f.close()
 

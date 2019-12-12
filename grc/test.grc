@@ -111,10 +111,6 @@
   <block>
     <key>Mercurial_SDR</key>
     <param>
-      <key>bits_key</key>
-      <value>8</value>
-    </param>
-    <param>
       <key>alias</key>
       <value></value>
     </param>
@@ -160,7 +156,7 @@
     </param>
     <param>
       <key>pamtype_key</key>
-      <value></value>
+      <value>ulaw</value>
     </param>
     <param>
       <key>minoutbuf</key>
@@ -168,15 +164,23 @@
     </param>
     <param>
       <key>modulation_key</key>
-      <value>psk</value>
+      <value>ook</value>
     </param>
     <param>
       <key>fs_key</key>
       <value>2</value>
     </param>
     <param>
+      <key>symtime_key</key>
+      <value>500000</value>
+    </param>
+    <param>
       <key>pammethod_key</key>
-      <value></value>
+      <value>flat_key</value>
+    </param>
+    <param>
+      <key>psk_key</key>
+      <value>8psk</value>
     </param>
   </block>
   <block>

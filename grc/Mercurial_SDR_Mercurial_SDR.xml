@@ -4,7 +4,7 @@
   <key>Mercurial_SDR</key>
   <category>[Mercurial_SDR]</category>
   <import>import Mercurial_SDR</import>
-  <make>Mercurial_SDR.Mercurial_SDR($modulation_key,$fc_key,$fs_key,$bits_key,$clk_key,$pammethod_key,$pamtype_key,$duty_key)</make>
+  <make>Mercurial_SDR.Mercurial_SDR($modulation_key,$psk_key,$fc_key,$fs_key,$clk_key,$pammethod_key,$pamtype_key,$duty_key)</make>
 <callback>set_modulation($bits_key)</callback>
  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
@@ -89,24 +89,30 @@
 <!--//////////////////////////////////////////////////////////////////////-->
 
   <param>
+    <name>Symbol Time</name>
+    <key>symtime_key</key>
+    <value>500000</value>
+    <type>int</type>
+    <hide>#if $modulation_key() == "ook" then 'none' else 'all'#</hide>
+
+
+  </param>
+
+
+
+  <!--//////////////////////////////////////////////////////////////////////-->
+
+  <param>
     <name>Sampling Frequency</name>
     <key>fs_key</key>
     <value>44100</value>
     <type>int</type>
+    <hide>#if $modulation_key() == "ook" then 'all' else 'none'#</hide>
+
 
   </param>
 
- <!--/////////////////////////////////////////////////////////////////////-->
 
-
-
-  <param>
-    <name>Bits/Symbol</name>
-    <key>bits_key</key>
-    <type>int</type>
-    <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" then 'all' else 'none'#</hide>
-
-  </param>
  <!--/////////////////////////////////////////////////////////////////////-->
 
 
@@ -115,7 +121,7 @@
     <key>clk_key</key>
     <value>2</value>
     <type>int</type>
-    <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" then 'all' else 'none'#</hide>
+    <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" or $modulation_key() == "ook" then 'all' else 'none'#</hide>
 
   </param>
 
