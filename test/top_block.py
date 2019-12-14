@@ -3,10 +3,8 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Tue Dec 10 01:07:07 2019
+# Generated: Sat Dec 14 03:13:19 2019
 ##################################################
-
-from distutils.version import StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -18,92 +16,90 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-from PyQt5 import Qt, QtCore
+from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
+from gnuradio.wxgui import forms
+from grc_gnuradio import wxgui as grc_wxgui
 from optparse import OptionParser
 import Mercurial_SDR
-import sys
-from gnuradio import qtgui
+import wx
 
 
-class top_block(gr.top_block, Qt.QWidget):
+class top_block(grc_wxgui.top_block_gui):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Top Block")
-        Qt.QWidget.__init__(self)
-        self.setWindowTitle("Top Block")
-        qtgui.util.check_set_qss()
-        try:
-            self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
-        except:
-            pass
-        self.top_scroll_layout = Qt.QVBoxLayout()
-        self.setLayout(self.top_scroll_layout)
-        self.top_scroll = Qt.QScrollArea()
-        self.top_scroll.setFrameStyle(Qt.QFrame.NoFrame)
-        self.top_scroll_layout.addWidget(self.top_scroll)
-        self.top_scroll.setWidgetResizable(True)
-        self.top_widget = Qt.QWidget()
-        self.top_scroll.setWidget(self.top_widget)
-        self.top_layout = Qt.QVBoxLayout(self.top_widget)
-        self.top_grid_layout = Qt.QGridLayout()
-        self.top_layout.addLayout(self.top_grid_layout)
-
-        self.settings = Qt.QSettings("GNU Radio", "top_block")
-
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
+        grc_wxgui.top_block_gui.__init__(self, title="Top Block")
 
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 32000
+        self.variable_slider_0 = variable_slider_0 = 500
+        self.samp_rate = samp_rate = 10000
 
         ##################################################
         # Blocks
         ##################################################
-        self.blocks_wavfile_source_0 = blocks.wavfile_source('/home/agustin/Descargas/pf/highway_intro8k.wav', True)
-        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('am',123,456)
+        _variable_slider_0_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._variable_slider_0_text_box = forms.text_box(
+        	parent=self.GetWin(),
+        	sizer=_variable_slider_0_sizer,
+        	value=self.variable_slider_0,
+        	callback=self.set_variable_slider_0,
+        	label='slider_freq',
+        	converter=forms.float_converter(),
+        	proportion=0,
+        )
+        self._variable_slider_0_slider = forms.slider(
+        	parent=self.GetWin(),
+        	sizer=_variable_slider_0_sizer,
+        	value=self.variable_slider_0,
+        	callback=self.set_variable_slider_0,
+        	minimum=50,
+        	maximum=5000,
+        	num_steps=100,
+        	style=wx.SL_HORIZONTAL,
+        	cast=float,
+        	proportion=1,
+        )
+        self.Add(_variable_slider_0_sizer)
+        self.blocks_null_source_0_0 = blocks.null_source(gr.sizeof_float*1)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*1)
+        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_SIN_WAVE, variable_slider_0, 1, 0)
+        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('am','bpsk',1000000,10000,4,'natural_key','alaw',100)
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_wavfile_source_0, 0), (self.Mercurial_SDR_0, 0))
+        self.connect((self.Mercurial_SDR_0, 0), (self.blocks_null_sink_0, 0))    
+        self.connect((self.analog_sig_source_x_0, 0), (self.Mercurial_SDR_0, 0))    
+        self.connect((self.blocks_null_source_0_0, 0), (self.Mercurial_SDR_0, 1))    
 
-    def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "top_block")
-        self.settings.setValue("geometry", self.saveGeometry())
-        event.accept()
+    def get_variable_slider_0(self):
+        return self.variable_slider_0
+
+    def set_variable_slider_0(self, variable_slider_0):
+        self.variable_slider_0 = variable_slider_0
+        self._variable_slider_0_slider.set_value(self.variable_slider_0)
+        self._variable_slider_0_text_box.set_value(self.variable_slider_0)
+        self.analog_sig_source_x_0.set_frequency(self.variable_slider_0)
 
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
 
 
 def main(top_block_cls=top_block, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
-    qapp = Qt.QApplication(sys.argv)
-
     tb = top_block_cls()
-    tb.start()
-    tb.show()
-
-    def quitting():
-        tb.stop()
-        tb.wait()
-    qapp.aboutToQuit.connect(quitting)
-    qapp.exec_()
+    tb.Start(True)
+    tb.Wait()
 
 
 if __name__ == '__main__':

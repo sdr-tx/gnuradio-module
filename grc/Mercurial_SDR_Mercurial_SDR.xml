@@ -201,7 +201,12 @@
        * vlen
        * optional (set to 1 for optional inputs) -->
   <sink>
-    <name>in</name>
+    <name>in_0</name>
+    <type>float</type>
+  </sink>
+
+  <sink>
+    <name>in_1</name>
     <type>float</type>
   </sink>
 
