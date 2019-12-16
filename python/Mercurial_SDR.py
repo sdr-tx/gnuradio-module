@@ -23,10 +23,20 @@ import numpy as np
 import subprocess
 import shlex
 import serial
+
+from numpy import log, zeros, abs, sign
 #from math import pi, sin
 #import argparse
 
 from gnuradio import gr
+
+# Some constants to make the code performancer
+A = 87.6
+INV_A = np.float32(1/A)
+INV_DIV_A = 1/(1+log(A))
+
+MU = 255
+INV_ULAW_DEN = 1/log(1+MU)
 
 class Mercurial_SDR(gr.sync_block):
     """
@@ -44,6 +54,7 @@ class Mercurial_SDR(gr.sync_block):
         self.fs = fs_key
         self.duty = duty_key
         self.pam_methode = pammethod_key
+        self.pam_type = pamtype_key
         self.syntethize = True
 
         # subprocess.call('icepll')
@@ -58,7 +69,6 @@ class Mercurial_SDR(gr.sync_block):
         #self.modulation = modulation_key
         #print(self.modulation)
         #print("MOD")
-        print("INIT")
 
 
         
@@ -68,25 +78,31 @@ class Mercurial_SDR(gr.sync_block):
         parameter03 = 8;
         parameter04 = 4;
 
+        # NOTA: Revisar!
+        # Como el método de PAM, typo y duty se maneja todo desde el código en python del bloque gnu creo que es innecesario
+        # recompilar cuando se cambian estos parámetros.
+        # A.H.
+
         try:
             f = open("check_syn","r")
             rl = f.readline()
-            current = "{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key)
-            print("TRY")
+            # current = "{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key)
+            current = "{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key)
 
             if (rl == current):
                 self.syntethize = False
             else:
               f.close()
-              f = open("check_syn","w+")
-              f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key))
+              f = open("check_syn", "w+")
+              # f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key))
+              f.write("{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key))
    
         except:
             print("[DEBUG] | Running exception code: the \"check_syn\" file doesn't exist")
-            f = open("check_syn","w+")
-            f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key))
+            f = open("check_syn", "w+")
+            # f.write("{}{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, pammethod_key, pamtype_key, duty_key))
+            f.write("{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key))
             f.close()
-            print("except")
 
      #  HDL code
          #.PARAMETER01    (`PARAMETER01),
@@ -117,11 +133,9 @@ class Mercurial_SDR(gr.sync_block):
          # *  PAM_DATA_LENGHT         24
          # *  
          # */
-        print("INIT 2")
 
 
         if(self.syntethize == True): 
-            print("syntethize")
 
             if(self.modulation == "am"):
                 parameter01 = 1
@@ -135,10 +149,11 @@ class Mercurial_SDR(gr.sync_block):
                 print("[INFO] | OOK modulation is set");
     
             elif(self.modulation == "pam"):
-                parameter01 = 1200
-                parameter02 = 24;
-                parameter03 = 24;                               # bits del dac
+                parameter01 = 1200                              # Divisor de frecuencia: fs = f_pll/parameter01 = 120MHz/1200 = 100kHz
+                parameter02 = 24;   # VER!!!!!!!  NO SÉ SI ERA 12 O 24!!!!!!!!  Con 24 anda bien. Ver comportamiento con 12.
+                parameter03 = 24;                               # Bits del DAC
                 print("[INFO] | PAM modulation is set");
+
     
             elif(psk_key == "bpsk"):
                 parameter01 = clk_key;
@@ -158,34 +173,33 @@ class Mercurial_SDR(gr.sync_block):
                 parameter04 = np.round(clk_key/fs_key)        
                 print("[INFO] | 8-PSK modulation is set");
     
-            # Descomentar para programar la FPGA
-            self.modulatorParametersGenerator(parameter01, parameter02, parameter03,parameter04)
+
+            # Genera el archivo con los parámetros configurables de los .v
+            self.modulatorParametersGenerator(parameter01, parameter02, parameter03, parameter04)
             
+            # Descomentar para programar la FPGA
             # Dos rutas diferentes de lo mismo. Depende si corrés desde docker o a pedal
-            self.programFPGA("../../syn", "all")           # From docker
-            #self.programFPGA("../../hdl/syn", "all")        # A pedal
+            # self.programFPGA("../../syn", "all")           # From docker
+            # self.programFPGA("../../hdl/syn", "all")        # A pedal
 
 
 #        data = [6 0]#, 3, 9, 12] 
-        print("BEFORE SERIAL 2")
 
         self.tty = serial.Serial('/dev/ttyUSB1')
         
-        print("AFTER SERIAL 2")
-
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
         in1 = input_items[1]
-        #print("[DEBUG] | fc = {}, fs = {} fc/fs = {}".format(self.fc, self.fs, self.fc/self.fs))
+        out = output_items[0]
         
         if(self.modulation == "pam"):
-            self.pam_processing(in0, in1)
+           b = self.pam_processing(in0, in1)
 
         else:
-            print("[DEBUG] | in0 len = ", len(in0))
             b = np.uint8(in0*127-128)
-            self.tty.write(b.tobytes())
+        
+        self.tty.write(b.tobytes())
 
         # print(type(in0),  " | ", in0)
         # out = output_items[0]
@@ -211,7 +225,7 @@ class Mercurial_SDR(gr.sync_block):
     def programFPGA(self, pathMakefileHDL, target):
         subprocess.call(['make', '-C', pathMakefileHDL,'clean'])
         subprocess.call(['make', '-C', pathMakefileHDL, target, 'MOD={}'.format(self.modulation)])
-        subprocess.call(['make', '-C', pathMakefileHDL, target, 'prog'])
+        #subprocess.call(['make', '-C', pathMakefileHDL, target, 'prog'])
 
     ####
     # modulatorParametersGenerator
@@ -220,8 +234,8 @@ class Mercurial_SDR(gr.sync_block):
     ####
     def modulatorParametersGenerator(self, parameter01, parameter02, parameter03,parameter04):
         # open file and write header
-        f = open("../../inc/module_params.v","w+")
-        #f = open("../../hdl/inc/module_params.v","w+")
+        #f = open("../../inc/module_params.v","w+")
+        f = open("../../hdl/inc/module_params.v","w+")
         f.write("`ifndef __PROJECT_CONFIG_V\n`define __PROJECT_CONFIG_V\n\n")
         f.write("`define PARAMETER01 %d\n" % parameter01)
         f.write("`define PARAMETER02 %d\n" % parameter02)
@@ -234,28 +248,137 @@ class Mercurial_SDR(gr.sync_block):
 
 
     def pam_processing(self, in0, in1):
+        '''
+        Método para procesar PAM. Realiza filtrado linea, ley-A, ley-u y muestreo natural o instantáneo.
+        Si el duty ingresado es mayor al 50%, sólo se utilizará el canal de entrada 1.
+        Recibe las dos señales de entrada en float
+        Devuelve la señal PAM en uint16
+        '''
 
-        if(self.pam_methode == "natural_key"):
+        if(self.pam_type == "ulaw"):        # u-Law
+            x1 = self.lin2ulaw(in0)
+            x2 = self.lin2ulaw(in1)
 
-            # print("Corriendo código no optimizado")
-            b = np.uint8(in0*127+128)
-            for n in range(len(b)):                     # Esa relación creo que debería hacerse con un define
-                if(n%12 > 12*self.duty/100):            # 12 <-- 12.5 = Tframe / Ts = 125us / 10us = 125us * 100kHz = 125us * fs
-                    b[n] = 0           
+        elif(self.pam_type == "alaw"):      # A-Law
+            x1 = self.lin2alaw(in0)
+            x2 = self.lin2alaw(in1)
 
-            # print("Corriendo código optimizado")    # Ese código se supone que es más performante
-            # b = np.zeros(len(in0), dtype=np.uint8)    # pero no anda correctamente: cada tanto salen por 
-            # for n in range(len(b)):                   # el DAC valores constantes.
-            #     if(n%12 <= 12*self.duty/100):
-            #         b[n] = np.uint8(in0[n]*127+128)
+        else:                               # Linear
+            x1 = in0
+            x2 = in1
+
+        if(self.duty > 50):
+            b = self.pam_processing_for_1signal(x1)
+        else:
+            b = self.pam_processing_for_2signals(x1,x2)
+
+        return b                                         
+
+
+    def lin2alaw(self, x):
+        '''
+        Método para aplicarle ley-a a la señal de entrada x
+        Recibe un vector de floats.
+        Devuelve un vector de floats
+        '''
+        
+        abs_x = abs(x)                              # Obtengo el módulo de la entrada
+        
+        opt1 = A * abs_x * INV_DIV_A                # Obtengo un vector con los valores para los casos en que mod_x < 1/A
+        opt2 = 1 + log(abs_x) * INV_DIV_A           # Obtengo un vector con los valores para los casos en que mod_x > 1/A
+
+        y = zeros(len(x), dtype = np.float32)       # Creo un vector de ceros para guardar la salida
+
+        i=0                                         # Seteo un contador para indexar
+        for n in abs_x:                             # Inicio el algoritmo de ley-a
+            if(n < INV_A):
+                y[i] = opt1[i]
+            else:
+                y[i] = opt2[i]
+            i+=1
+        
+        return y*sign(x)
+
+
+    def lin2ulaw(self,x):
+        '''
+        Método para aplicarle ley-u a la señal de entrada x
+        Recibe un vector de floats.
+        Devuelve un vector de floats
+        '''
+        ulaw_num = log(1 + MU * abs(x)) 
+        return sign(x) * ulaw_num * INV_ULAW_DEN
+
+
+    def pam_processing_for_1signal(self, x):
+        '''
+        Modulación PAM para una única señal de entrada. Sale con muestreo natural o instantáneo (Flat-Top).
+        Recibe un vector de floats con la señal de entrada natural o filtrada con ley-A o ley-u.
+        Devuelve un vector en uint16 con la entrada en PAM.
+        '''
+
+        if(self.pam_methode == "natural_key"):              # Procesamiento para muestreo natural
+
+            b = np.uint16(x*32767 + 32768)                  # Creo el vector de salida: es la señal de entrada de float a uint16
+            for n in range(len(b)):                         
+                if(n%12 > 12*self.duty/100):                # 12 <-- 12.5 = Tframe / Ts = 125us / 10us = 125us * 100kHz = 125us * fs
+                    b[n] = 0                                # Si n%12 es mayor que el duty, el resto de los valores de ese fram 
+                                                            # debe ser 0 
                  
-        else:                                           # Flat-top
-            b = np.zeros(len(in0), dtype=np.uint8)    # pero no anda correctamente: cada tanto salen por 
-            for n in range(len(b)):                   # el DAC valores constantes.
-                if(n%12 == 0):
-                    instant_sample = np.uint8(in0[n]*127+128)
-                if(n%12 <= 12*self.duty/100):
+        else:                                               # Procesamiento para muestreo Flat-top
+            b = zeros(len(x), dtype=np.uint16)              # Creo el vector de salida (vector de 0s)
+            for n in range(len(b)):                        
+                if(n%12 == 0):                              # Tomo el valor instantáneo para cada frame
+                    instant_sample = np.uint16(x[n]*32767+32768)
+                if(n%12 < 12*self.duty/100):                # Si estoy por debajo del duty, inserto la muestra instantánea
                     b[n] = instant_sample
 
-        self.tty.write(b.tobytes()) 
+        return b                                            # Retorno el vector de salida
 
+
+
+    def pam_processing_for_2signals(self,x1,x2):
+        '''
+        Modulación PAM para dos señales de entrada. Salen con muestreo natural o instantáneo (Flat-Top).
+        Recibe dos vectores de floats con la señal de entrada natural o filtrada con ley-A o ley-u.
+        Devuelve un vector en uint16 con las entradas en PAM.
+
+        NOTA: si se compara el procesamiento que se hace para el muestro natural de una sola señal de entrada
+        vs el de este método notará que aquí el código es más crudo: en vez de utilizar el operador módulo (%) se
+        utiliza un contador que se resetea en cada frame. Esto fue necesario ya que al correr el código para dos señales
+        con operadores módulo (%) generaba mucha demora, quedano vacía en buffer de recepción del dispositivo.
+        '''
+
+        duty = int(12*self.duty/100)                            # Tamaño del frame: utilizada para aumentar la performance en tiempo
+    
+        if(self.pam_methode == "natural_key"):                  # Procesamiento para muestro natural
+            b1 = np.uint16(x1*32767 + 32768)                    # Convierto la señal 1 de float a int16
+            b = np.uint16(x2*32767 + 32768)                     # Convierto la señal 2 de float a int16. Ese vector será la salida
+            
+            for n in range(len(b)):                         
+                if(n%12 < duty):                                # Si por debajo del duty, pongo la señal 1 a la salida
+                    b[n] = b1[n]
+                elif(n%12 >= duty *2):                          # Si estoy por arriba de dos duty, la salida es 0
+                    b[n] = 0
+                                                                # Para los valores intermedios, la salida es la señal 2
+        else:                                                   # Procesamiento para muestreo Flat-Top
+            b = zeros(max(len(x1),len(x2)), dtype=np.uint16)    # Creo el vector de salida (vector de 0s)
+            instant_sample_1 = np.uint16(x1[0]*32767+32768)     # Muestra instantánea de la entrada 1
+            instant_sample_2 = np.uint16(x2[duty]*32767+32768)  # Muestra instantáneo de la entrada 2 (un duty después)
+            
+            i = 0                                               # Creo el contador
+            for n in range(len(b)):                       
+                if( i == 12):                                   # Si el contador llegó al ancho de frame, reseteo y tomo una nueva
+                    instant_sample_1 = np.uint16(x1[n]*32767+32768)     # muestra instantánea del canal 1
+                    i = 0
+
+                elif( i == duty):                               # Si el contador llegó al ancho de duty, tomo una muestra instantánea
+                    instant_sample_2 = np.uint16(x2[n]*32767+32768)     # del canal 2
+                
+                if(i < duty):                                   # Si el contador está por debajo del duty, la salida es la muestra
+                    b[n] = instant_sample_1                     # instantánea 1
+                elif(i < duty *2):                              # Si el contador está por arriba del duty y por debajo de dos dutys
+                    b[n] = instant_sample_2                     # la salida es la muestra instantánea 2
+                i +=1 
+                                                                # En otro caso, ya está en 0 la salida
+        return b

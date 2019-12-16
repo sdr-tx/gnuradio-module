@@ -129,10 +129,11 @@
 
 
 
-    <param>
+  <param>
     <name>Type PAM</name>
+
     <key>pammethod_key</key>
-    <value>flat_key</value>
+    <value>natural_key</value>
     <type>string</type>
     <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
 
@@ -152,9 +153,14 @@
   <param>
     <name>Method PAM</name>
     <key>pamtype_key</key>
-    <value>ulaw</value>
+    <value>linear_key</value>
     <type>string</type>
     <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
+
+    <option>
+      <name>Linear</name>
+      <key>linear_key</key>
+    </option>
 
     <option>
       <name>μ-Law</name>
@@ -165,6 +171,7 @@
       <name>A-Law</name>
       <key>alaw</key>
     </option>
+
   </param>
 
 
