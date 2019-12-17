@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.10'?>
+<?grc format='1' created='3.7.11'?>
 <flow_graph>
   <timestamp>Wed Nov  6 18:08:20 2019</timestamp>
   <block>
@@ -105,7 +105,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>10000</value>
+      <value>100000</value>
     </param>
   </block>
   <block>
@@ -128,7 +128,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(400, 24)</value>
+      <value>(360, 12)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -179,7 +179,7 @@
     </param>
     <param>
       <key>clk_key</key>
-      <value>4</value>
+      <value>2</value>
     </param>
     <param>
       <key>comment</key>
@@ -191,7 +191,7 @@
     </param>
     <param>
       <key>duty_key</key>
-      <value>100</value>
+      <value>50</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -199,7 +199,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(496, 144)</value>
+      <value>(464, 188)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -215,7 +215,7 @@
     </param>
     <param>
       <key>pamtype_key</key>
-      <value>alaw</value>
+      <value>linear_key</value>
     </param>
     <param>
       <key>minoutbuf</key>
@@ -227,7 +227,11 @@
     </param>
     <param>
       <key>fs_key</key>
-      <value>10000</value>
+      <value>44100</value>
+    </param>
+    <param>
+      <key>fs_pam_key</key>
+      <value>100000</value>
     </param>
     <param>
       <key>symtime_key</key>
@@ -329,7 +333,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(896, 176)</value>
+      <value>(840, 192)</value>
     </param>
     <param>
       <key>_rotation</key>
