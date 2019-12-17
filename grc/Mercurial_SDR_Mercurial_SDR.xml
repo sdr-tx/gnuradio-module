@@ -195,6 +195,9 @@
     <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
 
   </param>
+<!--Acá van los checks-->
+  <check>$fs_pam_key == 100000</check>
+
 
 <!--/////////////////////////////////////////////////////////////////////-->
 
@@ -228,5 +231,7 @@
     <name>out</name>
     <type>float</type>
   </source>
+
+
 
 </block>
