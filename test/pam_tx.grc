@@ -192,7 +192,7 @@
     </param>
     <param>
       <key>num_steps</key>
-      <value>100</value>
+      <value>200</value>
     </param>
     <param>
       <key>style</key>
@@ -368,7 +368,7 @@
     </param>
     <param>
       <key>duty_key</key>
-      <value>10</value>
+      <value>100</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -407,12 +407,16 @@
       <value>100000</value>
     </param>
     <param>
+      <key>fs_pam_key</key>
+      <value>100000</value>
+    </param>
+    <param>
       <key>symtime_key</key>
       <value>500000</value>
     </param>
     <param>
       <key>pammethod_key</key>
-      <value>flat_key</value>
+      <value>natural_key</value>
     </param>
     <param>
       <key>psk_key</key>
@@ -542,7 +546,7 @@
     </param>
     <param>
       <key>waveform</key>
-      <value>analog.GR_CONST_WAVE</value>
+      <value>analog.GR_COS_WAVE</value>
     </param>
   </block>
   <block>

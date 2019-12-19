@@ -42,7 +42,7 @@ class Mercurial_SDR(gr.sync_block):
     """
     docstring for block Mercurial_SDR
     """
-    def __init__(self, modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key):
+    def __init__(self, modulation_key, psk_key, fc_key, fs_key, clk_key, pammethod_key, pamtype_key, duty_key):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[np.float32, np.float32],
@@ -50,6 +50,7 @@ class Mercurial_SDR(gr.sync_block):
 
         # Atributos
         self.modulation  = modulation_key;
+        self.psk_mod = psk_key
         self.fc = fc_key
         self.fs = fs_key
         self.duty = duty_key
@@ -70,9 +71,7 @@ class Mercurial_SDR(gr.sync_block):
         #print(self.modulation)
         #print("MOD")
 
-
-        
-        modulation_psk  = psk_key;      # ?
+        # Dafault values for configuration parameters.
         parameter01 = 1;
         parameter02 = 255;
         parameter03 = 8;
@@ -116,12 +115,6 @@ class Mercurial_SDR(gr.sync_block):
          # *  AM_REPEATED_SAMPLE      30
          # */
 
-         #/*  AM_CLKS_PER_PWM_STEP    1
-         # *  AM_PWM_STEP_PER_SAMPLE  255
-         # *  AM_BITS_PER_SAMPLE      8
-         # *  AM_REPEATED_SAMPLE      30
-         # */
-
          #/*  PSK_CLKS_PER_BIT        4
          # *  PSK_BITS_PER_SYMBOL     4
          # *
@@ -153,25 +146,25 @@ class Mercurial_SDR(gr.sync_block):
                 parameter02 = 24;   # VER!!!!!!!  NO SÉ SI ERA 12 O 24!!!!!!!!  Con 24 anda bien. Ver comportamiento con 12.
                 parameter03 = 24;                               # Bits del DAC
                 print("[INFO] | PAM modulation is set");
-
     
-            elif(psk_key == "bpsk"):
-                parameter01 = clk_key;
-                parameter02 = 2;
-                parameter04 = np.round(clk_key/fs_key);
-                print("[INFO] | BPSK modulation is set");
-    
-            elif(psk_key == "qpsk"):
-                parameter01 = clk_key;
-                parameter02 = 4;
-                parameter04 = np.round(clk_key/fs_key);
-                print("[INFO] | QPSK modulation is set");
-    
-            elif(psk_key == "8psk"):
-                parameter01 = clk_key;
-                parameter02 = 8;
-                parameter04 = np.round(clk_key/fs_key)        
-                print("[INFO] | 8-PSK modulation is set");
+            elif(self.modulation == "psk"):
+                if(psk_key == "bpsk"):
+                    parameter01 = clk_key;
+                    parameter02 = 2;
+                    parameter04 = np.round(clk_key/fs_key);
+                    print("[INFO] | BPSK modulation is set");
+        
+                elif(psk_key == "qpsk"):
+                    parameter01 = clk_key;
+                    parameter02 = 4;
+                    parameter04 = np.round(clk_key/fs_key);
+                    print("[INFO] | QPSK modulation is set");
+        
+                elif(psk_key == "8psk"):
+                    parameter01 = clk_key;
+                    parameter02 = 8;
+                    parameter04 = np.round(clk_key/fs_key)        
+                    print("[INFO] | 8-PSK modulation is set");
     
 
             # Genera el archivo con los parámetros configurables de los .v
@@ -182,8 +175,6 @@ class Mercurial_SDR(gr.sync_block):
             # self.programFPGA("../../syn", "all")           # From docker
             # self.programFPGA("../../hdl/syn", "all")        # A pedal
 
-
-#        data = [6 0]#, 3, 9, 12] 
 
         self.tty = serial.Serial('/dev/ttyUSB1')
         
@@ -196,6 +187,8 @@ class Mercurial_SDR(gr.sync_block):
         if(self.modulation == "pam"):
            b = self.pam_processing(in0, in1)
 
+        elif(self.modulation == "psk"):
+            b = self.psk_processing(in0)
         else:
             b = np.uint8(in0*127-128)
         
@@ -225,7 +218,7 @@ class Mercurial_SDR(gr.sync_block):
     def programFPGA(self, pathMakefileHDL, target):
         subprocess.call(['make', '-C', pathMakefileHDL,'clean'])
         subprocess.call(['make', '-C', pathMakefileHDL, target, 'MOD={}'.format(self.modulation)])
-        #subprocess.call(['make', '-C', pathMakefileHDL, target, 'prog'])
+        subprocess.call(['make', '-C', pathMakefileHDL, target, 'prog'])
 
     ####
     # modulatorParametersGenerator
@@ -234,7 +227,7 @@ class Mercurial_SDR(gr.sync_block):
     ####
     def modulatorParametersGenerator(self, parameter01, parameter02, parameter03,parameter04):
         # open file and write header
-        #f = open("../../inc/module_params.v","w+")
+        # f = open("../../inc/module_params.v","w+")
         f = open("../../hdl/inc/module_params.v","w+")
         f.write("`ifndef __PROJECT_CONFIG_V\n`define __PROJECT_CONFIG_V\n\n")
         f.write("`define PARAMETER01 %d\n" % parameter01)
@@ -381,4 +374,50 @@ class Mercurial_SDR(gr.sync_block):
                     b[n] = instant_sample_2                     # la salida es la muestra instantánea 2
                 i +=1 
                                                                 # En otro caso, ya está en 0 la salida
+        return b
+
+
+
+    def psk_processing(self, x):
+
+        i = 0
+        b = np.empty(len(x), dtype = np.uint8)
+
+        if(self.psk_mod == "bpsk"):
+            for n in x:
+                b[i] = 0x1 if(n == 0) else 0x2
+                i += 1
+
+        elif(self.psk_mod == "qpsk"):
+            for n in x:
+                if(n == 0):
+                    b[i] = 0x3
+                elif(n == 1):
+                    b[i] = 0x9
+                elif(n == 2):
+                    b[i] = 0xC
+                else:
+                    b[i] =0x6
+                i +=1
+        
+        else:   # 8-PSK
+            for n in x:
+                if(n == 0):
+                    b[i] = 0x0F
+                elif(n == 1):
+                    b[i] = 0x1E
+                elif(n == 2):
+                    b[i] = 0x3C
+                elif(n == 3):
+                    b[i] =0x78
+                elif(n == 4):
+                    b[i] = 0xF0
+                elif(n == 5):
+                    b[i] = 0xE1
+                elif(n == 6):
+                    b[i] =0xC3
+                else:
+                    b[i] =0x87
+                i +=1
+
         return b
