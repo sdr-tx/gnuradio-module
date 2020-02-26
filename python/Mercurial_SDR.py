@@ -168,7 +168,7 @@ class Mercurial_SDR(gr.sync_block):
     
 
             # Genera el archivo con los parámetros configurables de los .v
-            self.modulatorParametersGenerator(parameter01, parameter02, parameter03, parameter04)
+            # self.modulatorParametersGenerator(parameter01, parameter02, parameter03, parameter04)
             
             # Descomentar para programar la FPGA
             # Dos rutas diferentes de lo mismo. Depende si corrés desde docker o a pedal
@@ -385,7 +385,7 @@ class Mercurial_SDR(gr.sync_block):
 
         if(self.psk_mod == "bpsk"):
             for n in x:
-                b[i] = 0x1 if(n == 0) else 0x2
+                b[i] = 0x01 if(n == 0) else 0x02
                 i += 1
 
         elif(self.psk_mod == "qpsk"):

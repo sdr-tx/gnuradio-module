@@ -152,7 +152,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>8psk</value>
+      <value>qpsk</value>
     </param>
     <param>
       <key>dims</key>
@@ -1815,7 +1815,7 @@
     </param>
     <param>
       <key>M</key>
-      <value>8</value>
+      <value>4</value>
     </param>
     <param>
       <key>fmax</key>
