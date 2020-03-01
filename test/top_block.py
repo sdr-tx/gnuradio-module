@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Wed Feb 26 05:58:08 2020
+# Generated: Sun Mar  1 03:08:53 2020
 ##################################################
 
 if __name__ == '__main__':
@@ -16,7 +16,6 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
@@ -37,162 +36,127 @@ class top_block(grc_wxgui.top_block_gui):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 100000
-        self.freq_sig2 = freq_sig2 = 500
-        self.freq_sig1 = freq_sig1 = 500
-        self.amp_sig2 = amp_sig2 = 0
-        self.amp_sig1 = amp_sig1 = 1
+        self.variable_slider_3 = variable_slider_3 = 500e-3
+        self.variable_slider_1 = variable_slider_1 = 1
+        self.variable_slider_0 = variable_slider_0 = 500
+        self.samp_rate = samp_rate = 32e3
 
         ##################################################
         # Blocks
         ##################################################
-        _freq_sig2_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._freq_sig2_text_box = forms.text_box(
+        _variable_slider_3_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._variable_slider_3_text_box = forms.text_box(
         	parent=self.GetWin(),
-        	sizer=_freq_sig2_sizer,
-        	value=self.freq_sig2,
-        	callback=self.set_freq_sig2,
-        	label='Frequency 2',
+        	sizer=_variable_slider_3_sizer,
+        	value=self.variable_slider_3,
+        	callback=self.set_variable_slider_3,
+        	label='slider_gain',
         	converter=forms.float_converter(),
         	proportion=0,
         )
-        self._freq_sig2_slider = forms.slider(
+        self._variable_slider_3_slider = forms.slider(
         	parent=self.GetWin(),
-        	sizer=_freq_sig2_sizer,
-        	value=self.freq_sig2,
-        	callback=self.set_freq_sig2,
+        	sizer=_variable_slider_3_sizer,
+        	value=self.variable_slider_3,
+        	callback=self.set_variable_slider_3,
         	minimum=0,
-        	maximum=5000,
-        	num_steps=1000,
-        	style=wx.SL_HORIZONTAL,
-        	cast=float,
-        	proportion=1,
-        )
-        self.Add(_freq_sig2_sizer)
-        _freq_sig1_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._freq_sig1_text_box = forms.text_box(
-        	parent=self.GetWin(),
-        	sizer=_freq_sig1_sizer,
-        	value=self.freq_sig1,
-        	callback=self.set_freq_sig1,
-        	label='Frequency 1',
-        	converter=forms.float_converter(),
-        	proportion=0,
-        )
-        self._freq_sig1_slider = forms.slider(
-        	parent=self.GetWin(),
-        	sizer=_freq_sig1_sizer,
-        	value=self.freq_sig1,
-        	callback=self.set_freq_sig1,
-        	minimum=0,
-        	maximum=5000,
-        	num_steps=1000,
-        	style=wx.SL_HORIZONTAL,
-        	cast=float,
-        	proportion=1,
-        )
-        self.Add(_freq_sig1_sizer)
-        _amp_sig2_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._amp_sig2_text_box = forms.text_box(
-        	parent=self.GetWin(),
-        	sizer=_amp_sig2_sizer,
-        	value=self.amp_sig2,
-        	callback=self.set_amp_sig2,
-        	label='Amplitud 2',
-        	converter=forms.float_converter(),
-        	proportion=0,
-        )
-        self._amp_sig2_slider = forms.slider(
-        	parent=self.GetWin(),
-        	sizer=_amp_sig2_sizer,
-        	value=self.amp_sig2,
-        	callback=self.set_amp_sig2,
-        	minimum=-1,
         	maximum=1,
-        	num_steps=200,
+        	num_steps=10,
         	style=wx.SL_HORIZONTAL,
         	cast=float,
         	proportion=1,
         )
-        self.Add(_amp_sig2_sizer)
-        _amp_sig1_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._amp_sig1_text_box = forms.text_box(
+        self.Add(_variable_slider_3_sizer)
+        _variable_slider_1_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._variable_slider_1_text_box = forms.text_box(
         	parent=self.GetWin(),
-        	sizer=_amp_sig1_sizer,
-        	value=self.amp_sig1,
-        	callback=self.set_amp_sig1,
-        	label='Amplitud 1',
+        	sizer=_variable_slider_1_sizer,
+        	value=self.variable_slider_1,
+        	callback=self.set_variable_slider_1,
+        	label='slider_amp',
         	converter=forms.float_converter(),
         	proportion=0,
         )
-        self._amp_sig1_slider = forms.slider(
+        self._variable_slider_1_slider = forms.slider(
         	parent=self.GetWin(),
-        	sizer=_amp_sig1_sizer,
-        	value=self.amp_sig1,
-        	callback=self.set_amp_sig1,
-        	minimum=-1,
+        	sizer=_variable_slider_1_sizer,
+        	value=self.variable_slider_1,
+        	callback=self.set_variable_slider_1,
+        	minimum=0,
         	maximum=1,
         	num_steps=100,
         	style=wx.SL_HORIZONTAL,
         	cast=float,
         	proportion=1,
         )
-        self.Add(_amp_sig1_sizer)
+        self.Add(_variable_slider_1_sizer)
+        _variable_slider_0_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._variable_slider_0_text_box = forms.text_box(
+        	parent=self.GetWin(),
+        	sizer=_variable_slider_0_sizer,
+        	value=self.variable_slider_0,
+        	callback=self.set_variable_slider_0,
+        	label='slider_freq',
+        	converter=forms.float_converter(),
+        	proportion=0,
+        )
+        self._variable_slider_0_slider = forms.slider(
+        	parent=self.GetWin(),
+        	sizer=_variable_slider_0_sizer,
+        	value=self.variable_slider_0,
+        	callback=self.set_variable_slider_0,
+        	minimum=0,
+        	maximum=25000,
+        	num_steps=25,
+        	style=wx.SL_HORIZONTAL,
+        	cast=float,
+        	proportion=1,
+        )
+        self.Add(_variable_slider_0_sizer)
+        self.blocks_wavfile_source_0 = blocks.wavfile_source('/home/leandro/Descargas/Rata Blanca - La Leyenda del Hada y el Mago(1).wav', True)
+        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*1)
-        self.analog_sig_source_x_0_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, freq_sig2, amp_sig2, 0)
-        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_SIN_WAVE, freq_sig1, amp_sig1, 0)
-        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('pam', 'bpsk', 1000000, 100000, 2, 'natural_key', 'linear_key', 100)
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((variable_slider_3, ))
+        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('am', 'bpsk', 468000, 32000, 2, 'natural_key', 'linear_key', 50,7,'pll_240','pll_240','pll_120','pll_60')
 
         ##################################################
         # Connections
         ##################################################
         self.connect((self.Mercurial_SDR_0, 0), (self.blocks_null_sink_0, 0))    
-        self.connect((self.analog_sig_source_x_0, 0), (self.Mercurial_SDR_0, 0))    
-        self.connect((self.analog_sig_source_x_0_0, 0), (self.Mercurial_SDR_0, 1))    
+        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.Mercurial_SDR_0, 0))    
+        self.connect((self.blocks_null_source_0, 0), (self.Mercurial_SDR_0, 1))    
+        self.connect((self.blocks_wavfile_source_0, 0), (self.blocks_multiply_const_vxx_0, 0))    
+
+    def get_variable_slider_3(self):
+        return self.variable_slider_3
+
+    def set_variable_slider_3(self, variable_slider_3):
+        self.variable_slider_3 = variable_slider_3
+        self._variable_slider_3_slider.set_value(self.variable_slider_3)
+        self._variable_slider_3_text_box.set_value(self.variable_slider_3)
+        self.blocks_multiply_const_vxx_0.set_k((self.variable_slider_3, ))
+
+    def get_variable_slider_1(self):
+        return self.variable_slider_1
+
+    def set_variable_slider_1(self, variable_slider_1):
+        self.variable_slider_1 = variable_slider_1
+        self._variable_slider_1_slider.set_value(self.variable_slider_1)
+        self._variable_slider_1_text_box.set_value(self.variable_slider_1)
+
+    def get_variable_slider_0(self):
+        return self.variable_slider_0
+
+    def set_variable_slider_0(self, variable_slider_0):
+        self.variable_slider_0 = variable_slider_0
+        self._variable_slider_0_slider.set_value(self.variable_slider_0)
+        self._variable_slider_0_text_box.set_value(self.variable_slider_0)
 
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.analog_sig_source_x_0_0.set_sampling_freq(self.samp_rate)
-        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
-
-    def get_freq_sig2(self):
-        return self.freq_sig2
-
-    def set_freq_sig2(self, freq_sig2):
-        self.freq_sig2 = freq_sig2
-        self._freq_sig2_slider.set_value(self.freq_sig2)
-        self._freq_sig2_text_box.set_value(self.freq_sig2)
-        self.analog_sig_source_x_0_0.set_frequency(self.freq_sig2)
-
-    def get_freq_sig1(self):
-        return self.freq_sig1
-
-    def set_freq_sig1(self, freq_sig1):
-        self.freq_sig1 = freq_sig1
-        self._freq_sig1_slider.set_value(self.freq_sig1)
-        self._freq_sig1_text_box.set_value(self.freq_sig1)
-        self.analog_sig_source_x_0.set_frequency(self.freq_sig1)
-
-    def get_amp_sig2(self):
-        return self.amp_sig2
-
-    def set_amp_sig2(self, amp_sig2):
-        self.amp_sig2 = amp_sig2
-        self._amp_sig2_slider.set_value(self.amp_sig2)
-        self._amp_sig2_text_box.set_value(self.amp_sig2)
-        self.analog_sig_source_x_0_0.set_amplitude(self.amp_sig2)
-
-    def get_amp_sig1(self):
-        return self.amp_sig1
-
-    def set_amp_sig1(self, amp_sig1):
-        self.amp_sig1 = amp_sig1
-        self._amp_sig1_slider.set_value(self.amp_sig1)
-        self._amp_sig1_text_box.set_value(self.amp_sig1)
-        self.analog_sig_source_x_0.set_amplitude(self.amp_sig1)
 
 
 def main(top_block_cls=top_block, options=None):

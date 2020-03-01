@@ -42,7 +42,7 @@ class Mercurial_SDR(gr.sync_block):
     """
     docstring for block Mercurial_SDR
     """
-    def __init__(self, modulation_key, psk_key, fc_key, fs_key, clk_key, pammethod_key, pamtype_key, duty_key):
+    def __init__(self, modulation_key, psk_key, fc_key, fs_key, clk_key, pammethod_key, pamtype_key, duty_key, nbits_key, am_fc_8bits_key, am_fc_7bits_key, am_fc_6bits_key, am_fc_5bits_key):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[np.float32, np.float32],
@@ -56,6 +56,12 @@ class Mercurial_SDR(gr.sync_block):
         self.duty = duty_key
         self.pam_methode = pammethod_key
         self.pam_type = pamtype_key
+        self.am_nbits = nbits_key
+        self.am_fc_8bits = am_fc_8bits_key
+        self.am_fc_7bits = am_fc_7bits_key
+        self.am_fc_6bits = am_fc_6bits_key
+        self.am_fc_5bits = am_fc_5bits_key
+        self.pll = 120
         self.syntethize = True
 
         # subprocess.call('icepll')
@@ -77,6 +83,46 @@ class Mercurial_SDR(gr.sync_block):
         parameter03 = 8;
         parameter04 = 4;
 
+
+        # Eleccion de PLL
+        if(self.modulation == "am"):
+            if(self.am_nbits == 8):
+                if(self.am_fc_8bits == "pll_60"):
+                    self.pll = 60
+                elif(self.am_fc_8bits == "pll_120"):
+                    self.pll = 120
+                elif(self.am_fc_8bits == "pll_240"):
+                    self.pll = 240
+
+            elif(self.am_nbits == 7):
+                if(self.am_fc_7bits == "pll_60"):
+                    self.pll = 60
+                elif(self.am_fc_7bits == "pll_120"):
+                    self.pll = 120
+                elif(self.am_fc_7bits == "pll_240"):
+                    self.pll = 240
+
+            elif(self.am_nbits == 6):
+                if(self.am_fc_6bits == "pll_60"):
+                    self.pll = 60
+                elif(self.am_fc_6bits == "pll_120"):
+                    self.pll = 120
+                elif(self.am_fc_6bits == "pll_240"):
+                    self.pll = 240
+
+            else:
+                self.pll = 60
+
+            print("[INFO] | PLL: {} MHz \n[INFO] | Bits: {}".format(self.pll, self.am_nbits))
+        
+        else:
+            self.pll = 120
+            print("[INFO] | PLL: {} MHz".format(self.pll))
+
+
+
+
+
         # NOTA: Revisar!
         # Como el método de PAM, typo y duty se maneja todo desde el código en python del bloque gnu creo que es innecesario
         # recompilar cuando se cambian estos parámetros.
@@ -86,7 +132,7 @@ class Mercurial_SDR(gr.sync_block):
             f = open("check_syn","r")
             rl = f.readline()
             # current = "{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key)
-            current = "{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key)
+            current = "{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, nbits_key, self.pll)
 
             if (rl == current):
                 self.syntethize = False
@@ -94,13 +140,13 @@ class Mercurial_SDR(gr.sync_block):
               f.close()
               f = open("check_syn", "w+")
               # f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key))
-              f.write("{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key))
+              f.write("{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, nbits_key, self.pll))
    
         except:
             print("[DEBUG] | Running exception code: the \"check_syn\" file doesn't exist")
             f = open("check_syn", "w+")
             # f.write("{}{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, pammethod_key, pamtype_key, duty_key))
-            f.write("{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key))
+            f.write("{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, nbits_key, self.pll))
             f.close()
 
      #  HDL code
@@ -132,9 +178,15 @@ class Mercurial_SDR(gr.sync_block):
 
             if(self.modulation == "am"):
                 parameter01 = 1
-                parameter02 = 255
-                parameter03 = 8
-                parameter04 = np.round(fc_key/fs_key);
+                parameter02 = pow(2,self.am_nbits) -1 ;
+                parameter03 = self.am_nbits;                
+
+                if(self.am_nbits == 8 and self.pll == 240):
+                    parameter04 = 31
+                elif(self.am_nbits == 7 and self.pll == 240):
+                    parameter04 = 60
+                else:
+                    parameter04 = np.round(self.pll * 1e6 / (parameter02+1) / fs_key);
                 print("[INFO] | AM modulation is set");
     
             elif(self.modulation == "ook"):
@@ -168,11 +220,11 @@ class Mercurial_SDR(gr.sync_block):
     
 
             # Genera el archivo con los parámetros configurables de los .v
-            # self.modulatorParametersGenerator(parameter01, parameter02, parameter03, parameter04)
+            self.modulatorParametersGenerator(parameter01, parameter02, parameter03, parameter04)
             
             # Descomentar para programar la FPGA
             # Dos rutas diferentes de lo mismo. Depende si corrés desde docker o a pedal
-            # self.programFPGA("../../syn", "all")           # From docker
+            self.programFPGA("../../syn", "all")           # From docker
             # self.programFPGA("../../hdl/syn", "all")        # A pedal
 
 
@@ -217,7 +269,7 @@ class Mercurial_SDR(gr.sync_block):
     ####
     def programFPGA(self, pathMakefileHDL, target):
         subprocess.call(['make', '-C', pathMakefileHDL,'clean'])
-        subprocess.call(['make', '-C', pathMakefileHDL, target, 'MOD={}'.format(self.modulation)])
+        subprocess.call(['make', '-C', pathMakefileHDL, target, 'MOD={}'.format(self.modulation), 'PLL={}'.format(self.pll)])
         subprocess.call(['make', '-C', pathMakefileHDL, target, 'prog'])
 
     ####
@@ -227,13 +279,14 @@ class Mercurial_SDR(gr.sync_block):
     ####
     def modulatorParametersGenerator(self, parameter01, parameter02, parameter03,parameter04):
         # open file and write header
-        # f = open("../../inc/module_params.v","w+")
-        f = open("../../hdl/inc/module_params.v","w+")
+        f = open("../../inc/module_params.v","w+")
+        #f = open("../../hdl/inc/module_params.v","w+")
         f.write("`ifndef __PROJECT_CONFIG_V\n`define __PROJECT_CONFIG_V\n\n")
         f.write("`define PARAMETER01 %d\n" % parameter01)
         f.write("`define PARAMETER02 %d\n" % parameter02)
         f.write("`define PARAMETER03 %d\n" % parameter03)
         f.write("`define PARAMETER04 %d\n" % parameter04)
+        f.write("`define MODULATION %d\n" % 5)
         f.write("`define CLK_PERIOD %d\n" % 4)
         f.write("\n`endif")
         f.close()
