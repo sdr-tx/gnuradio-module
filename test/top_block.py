@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Sun Mar  1 03:08:53 2020
+# Generated: Sun Mar  1 16:38:31 2020
 ##################################################
 
 if __name__ == '__main__':
@@ -36,10 +36,10 @@ class top_block(grc_wxgui.top_block_gui):
         ##################################################
         # Variables
         ##################################################
+        self.variable_slider_1 = variable_slider_1 = 32e3
         self.variable_slider_3 = variable_slider_3 = 500e-3
-        self.variable_slider_1 = variable_slider_1 = 1
         self.variable_slider_0 = variable_slider_0 = 500
-        self.samp_rate = samp_rate = 32e3
+        self.samp_rate = samp_rate = variable_slider_1
 
         ##################################################
         # Blocks
@@ -73,7 +73,7 @@ class top_block(grc_wxgui.top_block_gui):
         	sizer=_variable_slider_1_sizer,
         	value=self.variable_slider_1,
         	callback=self.set_variable_slider_1,
-        	label='slider_amp',
+        	label='slider_samp',
         	converter=forms.float_converter(),
         	proportion=0,
         )
@@ -83,8 +83,8 @@ class top_block(grc_wxgui.top_block_gui):
         	value=self.variable_slider_1,
         	callback=self.set_variable_slider_1,
         	minimum=0,
-        	maximum=1,
-        	num_steps=100,
+        	maximum=785e3,
+        	num_steps=785,
         	style=wx.SL_HORIZONTAL,
         	cast=float,
         	proportion=1,
@@ -117,7 +117,7 @@ class top_block(grc_wxgui.top_block_gui):
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((variable_slider_3, ))
-        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('am', 'bpsk', 468000, 32000, 2, 'natural_key', 'linear_key', 50,7,'pll_240','pll_240','pll_120','pll_60')
+        self.Mercurial_SDR_0 = Mercurial_SDR.Mercurial_SDR('am', '8psk', 468000, 32000, 2, 'natural_key', 'linear_key', 50,7,'pll_201','pll_201','pll_50.25','pll_50.25')
 
         ##################################################
         # Connections
@@ -127,6 +127,15 @@ class top_block(grc_wxgui.top_block_gui):
         self.connect((self.blocks_null_source_0, 0), (self.Mercurial_SDR_0, 1))    
         self.connect((self.blocks_wavfile_source_0, 0), (self.blocks_multiply_const_vxx_0, 0))    
 
+    def get_variable_slider_1(self):
+        return self.variable_slider_1
+
+    def set_variable_slider_1(self, variable_slider_1):
+        self.variable_slider_1 = variable_slider_1
+        self._variable_slider_1_slider.set_value(self.variable_slider_1)
+        self._variable_slider_1_text_box.set_value(self.variable_slider_1)
+        self.set_samp_rate(self.variable_slider_1)
+
     def get_variable_slider_3(self):
         return self.variable_slider_3
 
@@ -135,14 +144,6 @@ class top_block(grc_wxgui.top_block_gui):
         self._variable_slider_3_slider.set_value(self.variable_slider_3)
         self._variable_slider_3_text_box.set_value(self.variable_slider_3)
         self.blocks_multiply_const_vxx_0.set_k((self.variable_slider_3, ))
-
-    def get_variable_slider_1(self):
-        return self.variable_slider_1
-
-    def set_variable_slider_1(self, variable_slider_1):
-        self.variable_slider_1 = variable_slider_1
-        self._variable_slider_1_slider.set_value(self.variable_slider_1)
-        self._variable_slider_1_text_box.set_value(self.variable_slider_1)
 
     def get_variable_slider_0(self):
         return self.variable_slider_0

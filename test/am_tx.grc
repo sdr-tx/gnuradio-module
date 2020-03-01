@@ -105,7 +105,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>32e3</value>
+      <value>variable_slider_1</value>
     </param>
   </block>
   <block>
@@ -179,7 +179,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1</value>
+      <value>32e3</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -203,11 +203,11 @@
     </param>
     <param>
       <key>label</key>
-      <value>slider_amp</value>
+      <value>slider_samp</value>
     </param>
     <param>
       <key>max</key>
-      <value>1</value>
+      <value>785e3</value>
     </param>
     <param>
       <key>min</key>
@@ -219,7 +219,7 @@
     </param>
     <param>
       <key>num_steps</key>
-      <value>100</value>
+      <value>785</value>
     </param>
     <param>
       <key>style</key>
@@ -352,19 +352,19 @@
     </param>
     <param>
       <key>am_fc_5bits_key</key>
-      <value>pll_60</value>
+      <value>pll_50.25</value>
     </param>
     <param>
       <key>am_fc_6bits_key</key>
-      <value>pll_120</value>
+      <value>pll_50.25</value>
     </param>
     <param>
       <key>am_fc_7bits_key</key>
-      <value>pll_240</value>
+      <value>pll_201</value>
     </param>
     <param>
       <key>am_fc_8bits_key</key>
-      <value>pll_240</value>
+      <value>pll_201</value>
     </param>
     <param>
       <key>fc_key</key>
@@ -392,7 +392,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(480, 256)</value>
+      <value>(496, 224)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -440,7 +440,7 @@
     </param>
     <param>
       <key>psk_key</key>
-      <value>bpsk</value>
+      <value>8psk</value>
     </param>
   </block>
   <block>
@@ -581,7 +581,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(720, 256)</value>
+      <value>(776, 248)</value>
     </param>
     <param>
       <key>_rotation</key>

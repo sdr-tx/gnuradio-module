@@ -108,18 +108,18 @@
         <hide>#if $modulation_key() == "am" and $nbits_key() == 8 then 'none' else 'all'#</hide>
 
         <option>
-            <name>234.37 kHz</name>
-            <key>pll_60</key>
+            <name>196.3 kHz</name>
+            <key>pll_50.25</key>
         </option>
     
         <option>
-            <name>468.75 kHz</name>
-            <key>pll_120</key>
+            <name>392.6 kHz</name>
+            <key>pll_100.5</key>
         </option>
 
         <option>
-            <name>937.5 kHz</name>
-            <key>pll_240</key>
+            <name>785.2 kHz</name>
+            <key>pll_201</key>
         </option>
 
     </param>
@@ -138,19 +138,19 @@
 
    
         <option>
-            <name>468.75 kHz</name>
-            <key>pll_60</key>
+            <name>392.6 kHz</name>
+            <key>pll_50.25</key>
         </option>
 
         <option>
-            <name>937.5 kHz</name>
-            <key>pll_120</key>
+            <name>785.2 kHz</name>
+            <key>pll_100.5</key>
         </option>
 
 
         <option>
-            <name>1.875 MHz</name>
-            <key>pll_240</key>
+            <name>1.570 MHz</name>
+            <key>pll_201</key>
         </option>
 
     </param>
@@ -168,18 +168,18 @@
         <hide>#if $modulation_key() == "am" and $nbits_key() == 6 then 'none' else 'all'#</hide>
 
         <option>
-            <name>937.5 kHz</name>
-            <key>pll_60</key>
+            <name>785.2 kHz</name>
+            <key>pll_50.25</key>
         </option>
 
         <option>
-            <name>1.875 MHz</name>
-            <key>pll_120</key>
+            <name>1.570 MHz</name>
+            <key>pll_100.5</key>
         </option>
 
         <option>
-            <name>3.75 MHz</name>
-            <key>pll_240</key>
+            <name>3.141 MHz</name>
+            <key>pll_201</key>
         </option>
     </param>
 
@@ -193,13 +193,18 @@
         <param>
         <name>Carrier Frequency</name>
         <key>am_fc_5bits_key</key>
-        <value>pll_60</value>
+        <value>pll_50</value>
         <type>string</type>
         <hide>#if $modulation_key() == "am" and $nbits_key() == 5 then 'none' else 'all'#</hide>
 
         <option>
             <name>1.875 MHz</name>
-            <key>pll_60</key>
+            <key>pll_50.25</key>
+        </option>
+
+        <option>
+            <name>3.141 MHz</name>
+            <key>pll_100.5</key>
         </option>
 
 
@@ -322,7 +327,7 @@
         <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
     </param>
 
-<!--Acá van los checks-->
+<!-- Checks -->
     <check>$fs_pam_key == 100000</check>
     <check>$duty_key &gt;= 0</check>                    <!--/Mayor o igual/-->
     <check>$duty_key &lt;= 100</check>                  <!--/Menor o igual/-->
@@ -359,5 +364,6 @@
         <name>out</name>
         <type>float</type>
     </source>
+
 
 </block>

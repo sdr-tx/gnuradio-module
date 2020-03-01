@@ -115,6 +115,22 @@
       <value></value>
     </param>
     <param>
+      <key>am_fc_5bits_key</key>
+      <value>pll_60</value>
+    </param>
+    <param>
+      <key>am_fc_6bits_key</key>
+      <value>pll_120</value>
+    </param>
+    <param>
+      <key>am_fc_7bits_key</key>
+      <value>pll_120</value>
+    </param>
+    <param>
+      <key>am_fc_8bits_key</key>
+      <value>pll_120</value>
+    </param>
+    <param>
       <key>fc_key</key>
       <value>468000</value>
     </param>
@@ -165,6 +181,10 @@
     <param>
       <key>modulation_key</key>
       <value>psk</value>
+    </param>
+    <param>
+      <key>nbits_key</key>
+      <value>8</value>
     </param>
     <param>
       <key>fs_key</key>
@@ -317,7 +337,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(744, 256)</value>
+      <value>(760, 264)</value>
     </param>
     <param>
       <key>_rotation</key>

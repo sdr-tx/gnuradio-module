@@ -46,7 +46,7 @@ class Mercurial_SDR(gr.sync_block):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[np.float32, np.float32],
-            out_sig=[np.float32])
+            out_sig= [np.float32])
 
         # Atributos
         self.modulation  = modulation_key;
@@ -62,56 +62,50 @@ class Mercurial_SDR(gr.sync_block):
         self.am_fc_6bits = am_fc_6bits_key
         self.am_fc_5bits = am_fc_5bits_key
         self.pll = 120
-        self.syntethize = True
+        self.synthesize = True
 
-        # subprocess.call('icepll')
 
-        #ser = serial.Serial('/dev/pts/13')  # open serial port
-        #print(ser.name)         # check which port was really used
-        #ser.write(b'hello')     # write a string
-        #ser.close()             # close port
-        #ser.baudrate = 9600
-        #print(ser.baudrate)
-        # subprocess.call(['echo', 'sin invocar shell\n'])
-        #self.modulation = modulation_key
-        #print(self.modulation)
-        #print("MOD")
 
         # Dafault values for configuration parameters.
         parameter01 = 1;
         parameter02 = 255;
         parameter03 = 8;
         parameter04 = 4;
+        modulation_number  = 0;
 
 
-        # Eleccion de PLL
+
+        # Choosing PLL
         if(self.modulation == "am"):
             if(self.am_nbits == 8):
-                if(self.am_fc_8bits == "pll_60"):
-                    self.pll = 60
-                elif(self.am_fc_8bits == "pll_120"):
-                    self.pll = 120
-                elif(self.am_fc_8bits == "pll_240"):
-                    self.pll = 240
+                if(self.am_fc_8bits == "pll_50.25"):
+                    self.pll = 50.25
+                elif(self.am_fc_8bits == "pll_100.5"):
+                    self.pll = 100.5
+                elif(self.am_fc_8bits == "pll_201"):
+                    self.pll = 201
 
             elif(self.am_nbits == 7):
-                if(self.am_fc_7bits == "pll_60"):
-                    self.pll = 60
-                elif(self.am_fc_7bits == "pll_120"):
-                    self.pll = 120
-                elif(self.am_fc_7bits == "pll_240"):
-                    self.pll = 240
+                if(self.am_fc_7bits == "pll_50.25"):
+                    self.pll = 50.25
+                elif(self.am_fc_7bits == "pll_100.5"):
+                    self.pll = 100.5
+                elif(self.am_fc_7bits == "pll_201"):
+                    self.pll = 201
 
             elif(self.am_nbits == 6):
-                if(self.am_fc_6bits == "pll_60"):
-                    self.pll = 60
-                elif(self.am_fc_6bits == "pll_120"):
-                    self.pll = 120
-                elif(self.am_fc_6bits == "pll_240"):
-                    self.pll = 240
+                if(self.am_fc_6bits == "pll_50.25"):
+                    self.pll = 50.25
+                elif(self.am_fc_6bits == "pll_100.5"):
+                    self.pll = 100.5
+                elif(self.am_fc_6bits == "pll_201"):
+                    self.pll = 201
 
-            else:
-                self.pll = 60
+            elif(self.am_nbits == 5):
+                if(self.am_fc_5bits == "pll_50.25"):
+                    self.pll = 50.25
+                elif(self.am_fc_5bits == "pll_100.5"):
+                    self.pll = 100.5
 
             print("[INFO] | PLL: {} MHz \n[INFO] | Bits: {}".format(self.pll, self.am_nbits))
         
@@ -123,10 +117,7 @@ class Mercurial_SDR(gr.sync_block):
 
 
 
-        # NOTA: Revisar!
-        # Como el método de PAM, typo y duty se maneja todo desde el código en python del bloque gnu creo que es innecesario
-        # recompilar cuando se cambian estos parámetros.
-        # A.H.
+        # Check routine for re-synthesis
 
         try:
             f = open("check_syn","r")
@@ -135,7 +126,7 @@ class Mercurial_SDR(gr.sync_block):
             current = "{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, nbits_key, self.pll)
 
             if (rl == current):
-                self.syntethize = False
+                self.synthesize = False
             else:
               f.close()
               f = open("check_syn", "w+")
@@ -174,29 +165,30 @@ class Mercurial_SDR(gr.sync_block):
          # */
 
 
-        if(self.syntethize == True): 
+        if(self.synthesize == True): 
 
             if(self.modulation == "am"):
                 parameter01 = 1
                 parameter02 = pow(2,self.am_nbits) -1 ;
                 parameter03 = self.am_nbits;                
+                modulation_number  = 1
 
-                if(self.am_nbits == 8 and self.pll == 240):
-                    parameter04 = 31
-                elif(self.am_nbits == 7 and self.pll == 240):
-                    parameter04 = 60
-                else:
-                    parameter04 = np.round(self.pll * 1e6 / (parameter02+1) / fs_key);
+                
+                parameter04 = np.round(self.pll * 1e6 / (parameter02+1) / fs_key);
+                
                 print("[INFO] | AM modulation is set");
     
             elif(self.modulation == "ook"):
                 parameter02 = 2;
+
                 print("[INFO] | OOK modulation is set");
     
             elif(self.modulation == "pam"):
                 parameter01 = 1200                              # Divisor de frecuencia: fs = f_pll/parameter01 = 120MHz/1200 = 100kHz
                 parameter02 = 24;   # VER!!!!!!!  NO SÉ SI ERA 12 O 24!!!!!!!!  Con 24 anda bien. Ver comportamiento con 12.
                 parameter03 = 24;                               # Bits del DAC
+                modulation_number  = 2
+
                 print("[INFO] | PAM modulation is set");
     
             elif(self.modulation == "psk"):
@@ -204,23 +196,28 @@ class Mercurial_SDR(gr.sync_block):
                     parameter01 = clk_key;
                     parameter02 = 2;
                     parameter04 = np.round(clk_key/fs_key);
+                    modulation_number  = 3
+
                     print("[INFO] | BPSK modulation is set");
         
                 elif(psk_key == "qpsk"):
                     parameter01 = clk_key;
                     parameter02 = 4;
                     parameter04 = np.round(clk_key/fs_key);
+                    modulation_number  = 4
                     print("[INFO] | QPSK modulation is set");
         
                 elif(psk_key == "8psk"):
                     parameter01 = clk_key;
                     parameter02 = 8;
-                    parameter04 = np.round(clk_key/fs_key)        
+                    parameter04 = np.round(clk_key/fs_key) 
+                    modulation_number  = 5
+       
                     print("[INFO] | 8-PSK modulation is set");
     
 
             # Genera el archivo con los parámetros configurables de los .v
-            self.modulatorParametersGenerator(parameter01, parameter02, parameter03, parameter04)
+            self.modulatorParametersGenerator(parameter01, parameter02, parameter03, parameter04, modulation_number)
             
             # Descomentar para programar la FPGA
             # Dos rutas diferentes de lo mismo. Depende si corrés desde docker o a pedal
@@ -235,7 +232,8 @@ class Mercurial_SDR(gr.sync_block):
         in0 = input_items[0]
         in1 = input_items[1]
         out = output_items[0]
-        
+        #out[:] = in0 + in1
+
         if(self.modulation == "pam"):
            b = self.pam_processing(in0, in1)
 
@@ -253,7 +251,7 @@ class Mercurial_SDR(gr.sync_block):
         # tty.write(input_items)
         #return
 
-        return len(output_items[0])
+        return len(out)
 
 
     def set_modulation(self, modulation_key):
@@ -277,7 +275,7 @@ class Mercurial_SDR(gr.sync_block):
     #
     # Used to write the necessary defines to build every modulator
     ####
-    def modulatorParametersGenerator(self, parameter01, parameter02, parameter03,parameter04):
+    def modulatorParametersGenerator(self, parameter01, parameter02, parameter03, parameter04, modulation_number):
         # open file and write header
         f = open("../../inc/module_params.v","w+")
         #f = open("../../hdl/inc/module_params.v","w+")
@@ -286,7 +284,7 @@ class Mercurial_SDR(gr.sync_block):
         f.write("`define PARAMETER02 %d\n" % parameter02)
         f.write("`define PARAMETER03 %d\n" % parameter03)
         f.write("`define PARAMETER04 %d\n" % parameter04)
-        f.write("`define MODULATION %d\n" % 5)
+        f.write("`define MODULATION %d\n" % modulation_number)
         f.write("`define CLK_PERIOD %d\n" % 4)
         f.write("\n`endif")
         f.close()
