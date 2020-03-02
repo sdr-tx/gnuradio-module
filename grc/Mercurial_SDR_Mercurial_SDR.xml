@@ -314,9 +314,15 @@
     <param>
         <name>Sampling Frequency</name>
         <key>fs_pam_key</key>
-        <value>100000</value>
+        <value>96000</value>
         <type>int</type>
         <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
+
+        <option>
+            <name>96 kHz</name>
+            <key>96000</key>
+        </option>
+
     </param>
 
     <param>
@@ -328,7 +334,7 @@
     </param>
 
 <!-- Checks -->
-    <check>$fs_pam_key == 100000</check>
+    <!--/<check>$fs_pam_key == 100000</check> ///-->
     <check>$duty_key &gt;= 0</check>                    <!--/Mayor o igual/-->
     <check>$duty_key &lt;= 100</check>                  <!--/Menor o igual/-->
 

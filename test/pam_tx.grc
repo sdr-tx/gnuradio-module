@@ -152,7 +152,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -211,7 +211,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>500</value>
+      <value>3000</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -239,7 +239,7 @@
     </param>
     <param>
       <key>max</key>
-      <value>5000</value>
+      <value>100000</value>
     </param>
     <param>
       <key>min</key>
@@ -251,7 +251,7 @@
     </param>
     <param>
       <key>num_steps</key>
-      <value>1000</value>
+      <value>100</value>
     </param>
     <param>
       <key>style</key>
@@ -270,7 +270,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>500</value>
+      <value>1000</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -298,7 +298,7 @@
     </param>
     <param>
       <key>max</key>
-      <value>5000</value>
+      <value>16000</value>
     </param>
     <param>
       <key>min</key>
@@ -310,7 +310,7 @@
     </param>
     <param>
       <key>num_steps</key>
-      <value>1000</value>
+      <value>32</value>
     </param>
     <param>
       <key>style</key>
@@ -341,7 +341,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>100000</value>
+      <value>96000</value>
     </param>
   </block>
   <block>
@@ -428,7 +428,7 @@
     </param>
     <param>
       <key>fs_pam_key</key>
-      <value>100000</value>
+      <value>96000</value>
     </param>
     <param>
       <key>symtime_key</key>
@@ -566,7 +566,7 @@
     </param>
     <param>
       <key>waveform</key>
-      <value>analog.GR_COS_WAVE</value>
+      <value>analog.GR_SIN_WAVE</value>
     </param>
   </block>
   <block>

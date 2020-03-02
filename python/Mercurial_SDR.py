@@ -184,8 +184,8 @@ class Mercurial_SDR(gr.sync_block):
                 print("[INFO] | OOK modulation is set");
     
             elif(self.modulation == "pam"):
-                parameter01 = 1200                              # Divisor de frecuencia: fs = f_pll/parameter01 = 120MHz/1200 = 100kHz
-                parameter02 = 24;   # VER!!!!!!!  NO SÉ SI ERA 12 O 24!!!!!!!!  Con 24 anda bien. Ver comportamiento con 12.
+                parameter01 = 1250                              # Divisor de frecuencia: fs = f_pll/parameter01 = 120MHz/1200 = 100kHz
+                parameter02 = 12;   # VER!!!!!!!  NO SÉ SI ERA 12 O 24!!!!!!!!  Con 24 anda bien. Ver comportamiento con 12.
                 parameter03 = 24;                               # Bits del DAC
                 modulation_number  = 2
 
