@@ -42,7 +42,8 @@ class Mercurial_SDR(gr.sync_block):
     """
     docstring for block Mercurial_SDR
     """
-    def __init__(self, modulation_key, psk_key, fc_key, fs_key, clk_key, pammethod_key, pamtype_key, duty_key, nbits_key, am_fc_8bits_key, am_fc_7bits_key, am_fc_6bits_key, am_fc_5bits_key):
+    def __init__(self, modulation_key, psk_key, fc_key, fs_key, pammethod_key, pamtype_key, duty_key, 
+                nbits_key, am_fc_8bits_key, am_fc_7bits_key, am_fc_6bits_key, am_fc_5bits_key, psk_fc_key, psk_fs5M_key, psk_fs1M_key):
         gr.sync_block.__init__(self,
             name="Mercurial_SDR",
             in_sig=[np.float32, np.float32],
@@ -52,7 +53,7 @@ class Mercurial_SDR(gr.sync_block):
         self.modulation  = modulation_key;
         self.psk_mod = psk_key
         self.fc = fc_key
-        self.fs = fs_key
+        self.fs = int(fs_key)
         self.duty = duty_key
         self.pam_methode = pammethod_key
         self.pam_type = pamtype_key
@@ -61,9 +62,12 @@ class Mercurial_SDR(gr.sync_block):
         self.am_fc_7bits = am_fc_7bits_key
         self.am_fc_6bits = am_fc_6bits_key
         self.am_fc_5bits = am_fc_5bits_key
+        self.psk_fc = psk_fc_key
+        self.psk_fs = 25e3
+        self.psk_fs5M = psk_fs5M_key
+        self.psk_fs1M = psk_fs1M_key
         self.pll = 120
         self.synthesize = True
-
 
 
         # Dafault values for configuration parameters.
@@ -115,29 +119,33 @@ class Mercurial_SDR(gr.sync_block):
 
 
 
-
+        if(self.modulation == "psk"):
+            if(self.psk_fc == 5e6):
+                self.psk_fs = self.psk_fs5M 
+            else:
+                self.psk_fs = self.psk_fs1M 
 
         # Check routine for re-synthesis
 
         try:
             f = open("check_syn","r")
             rl = f.readline()
-            # current = "{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key)
-            current = "{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, nbits_key, self.pll)
+            # current = "{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,ammethod_key,pamtype_key,duty_key)
+            current = "{}{}{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, nbits_key, self.pll, psk_fc_key, psk_fs5M_key , psk_fs1M_key)
 
             if (rl == current):
                 self.synthesize = False
             else:
               f.close()
               f = open("check_syn", "w+")
-              # f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,clk_key,pammethod_key,pamtype_key,duty_key))
-              f.write("{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, nbits_key, self.pll))
+              # f.write("{}{}{}{}{}{}{}{}".format(modulation_key,psk_key,fc_key,fs_key,ammethod_key,pamtype_key,duty_key))
+              f.write("{}{}{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, nbits_key, self.pll, psk_fc_key, psk_fs5M_key , psk_fs1M_key))
    
         except:
             print("[DEBUG] | Running exception code: the \"check_syn\" file doesn't exist")
             f = open("check_syn", "w+")
-            # f.write("{}{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, pammethod_key, pamtype_key, duty_key))
-            f.write("{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, clk_key, nbits_key, self.pll))
+            # f.write("{}{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, pammethod_key, pamtype_key, duty_key))
+            f.write("{}{}{}{}{}{}{}{}{}".format(modulation_key, psk_key, fc_key, fs_key, nbits_key, self.pll, psk_fc_key, psk_fs5M_key , psk_fs1M_key))
             f.close()
 
      #  HDL code
@@ -174,7 +182,7 @@ class Mercurial_SDR(gr.sync_block):
                 modulation_number  = 1
 
                 
-                parameter04 = np.round(self.pll * 1e6 / (parameter02+1) / fs_key);
+                parameter04 = np.round(self.pll * 1e6 / (parameter02+1) / fs_key)-1;
                 
                 print("[INFO] | AM modulation is set");
     
@@ -192,26 +200,26 @@ class Mercurial_SDR(gr.sync_block):
                 print("[INFO] | PAM modulation is set");
     
             elif(self.modulation == "psk"):
+
+                parameter04 = self.psk_fc/self.psk_fs;
+
                 if(psk_key == "bpsk"):
-                    parameter01 = clk_key;
+                    parameter01 = 120e6/(2*self.psk_fc);
                     parameter02 = 2;
-                    parameter04 = np.round(clk_key/fs_key);
-                    modulation_number  = 3
+                    modulation_number = 3
 
                     print("[INFO] | BPSK modulation is set");
         
                 elif(psk_key == "qpsk"):
-                    parameter01 = clk_key;
+                    parameter01 = 120e6/(4*self.psk_fc);
                     parameter02 = 4;
-                    parameter04 = np.round(clk_key/fs_key);
-                    modulation_number  = 4
+                    modulation_number = 4
                     print("[INFO] | QPSK modulation is set");
         
                 elif(psk_key == "8psk"):
-                    parameter01 = clk_key;
+                    parameter01 = 120e6/(8*self.psk_fc);
                     parameter02 = 8;
-                    parameter04 = np.round(clk_key/fs_key) 
-                    modulation_number  = 5
+                    modulation_number = 5
        
                     print("[INFO] | 8-PSK modulation is set");
     

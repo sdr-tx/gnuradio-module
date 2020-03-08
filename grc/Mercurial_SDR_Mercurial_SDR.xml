@@ -4,7 +4,7 @@
   <key>Mercurial_SDR</key>
   <category>[Mercurial_SDR]</category>
   <import>import Mercurial_SDR</import>
-  <make>Mercurial_SDR.Mercurial_SDR($modulation_key, $psk_key, $fc_key, $fs_key, $clk_key, $pammethod_key, $pamtype_key, $duty_key,$nbits_key,$am_fc_8bits_key,$am_fc_7bits_key,$am_fc_6bits_key,$am_fc_5bits_key)</make>
+  <make>Mercurial_SDR.Mercurial_SDR($modulation_key, $psk_key, $fc_key, $fs_key, $pammethod_key, $pamtype_key, $duty_key,$nbits_key,$am_fc_8bits_key,$am_fc_7bits_key,$am_fc_6bits_key,$am_fc_5bits_key,$psk_fc_key,$psk_fs5M_key,$psk_fs1M_key)</make>
 <callback>set_modulation($bits_key)</callback>
  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
@@ -67,6 +67,95 @@
 
 
 <!--//////////////////////////////////////////////////////////////////////-->
+    <param>
+        <name>Carrier frequency </name>
+        <key>psk_fc_key</key>
+        <value>5000000</value>
+        <type>int</type>
+        <hide>#if $modulation_key() == "psk" then 'none' else 'all'#</hide>
+
+        <option>
+            <name>5 MHz</name>
+            <key>5000000</key>
+        </option>
+
+        <option>
+            <name>1 MHz</name>
+            <key>1000000</key>
+        </option>
+
+    </param>
+
+
+<!--//////////////////////////////////////////////////////////////////////-->
+
+
+
+<!--//////////////////////////////////////////////////////////////////////-->
+    <param>
+        <name>Sampling frequency</name>
+        <key>psk_fs5M_key</key>
+        <value>50000</value>
+        <type>int</type>
+        <hide>#if $modulation_key() == "psk" and $psk_fc_key() == 5000000 then 'none' else 'all'#</hide>
+
+
+        <option>
+            <name>250 kHz</name>
+            <key>250000</key>
+        </option>
+
+        <option>
+            <name>62.5 kHz</name>
+            <key>62500</key>
+        </option>
+
+        <option>
+            <name>50 kHz</name>
+            <key>50000</key>
+        </option>
+
+        <option>
+            <name>25 kHz</name>
+            <key>25000</key>
+        </option>
+
+
+    </param>
+
+<!--//////////////////////////////////////////////////////////////////////-->
+
+<!--//////////////////////////////////////////////////////////////////////-->
+    <param>
+        <name>Sampling frequency</name>
+        <key>psk_fs1M_key</key>
+        <value>50000</value>
+        <type>int</type>
+        <hide>#if $modulation_key() == "psk" and $psk_fc_key() == 1000000 then 'none' else 'all'#</hide>
+
+
+        <option>
+            <name>100 kHz</name>
+            <key>100000</key>
+        </option>
+
+        <option>
+            <name>50 kHz</name>
+            <key>50000</key>
+        </option>
+
+        <option>
+            <name>25 kHz</name>
+            <key>25000</key>
+        </option>
+
+
+
+    </param>
+
+<!--//////////////////////////////////////////////////////////////////////-->
+
+
 
 
     <param>
@@ -198,7 +287,7 @@
         <hide>#if $modulation_key() == "am" and $nbits_key() == 5 then 'none' else 'all'#</hide>
 
         <option>
-            <name>1.875 MHz</name>
+            <name>1.570 MHz</name>
             <key>pll_50.25</key>
         </option>
 
@@ -220,7 +309,7 @@
         <key>fc_key</key>
         <value>1000000</value>
         <type>int</type>
-        <hide>#if $modulation_key() == "am" or $modulation_key() == "pam"  then 'all' else 'none'#</hide>
+        <hide>#if $modulation_key() == "ook"  then 'none' else 'all'#</hide>
     </param>
 
 
@@ -244,21 +333,10 @@
         <name>Sampling Frequency</name>
         <key>fs_key</key>
         <value>44100</value>
-        <type>int</type>
-        <hide>#if $modulation_key() == "ook" or $modulation_key() == "pam" then 'all' else 'none'#</hide>
+        <type>float</type>
+        <hide>#if $modulation_key() == "am" then 'none' else 'all'#</hide>
     </param>
 
-
- <!--/////////////////////////////////////////////////////////////////////-->
-
-
-    <param>
-        <name>Clk/Symbol</name>
-        <key>clk_key</key>
-        <value>2</value>
-        <type>int</type>
-        <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" or $modulation_key() == "ook" then 'all' else 'none'#</hide>
-    </param>
 
  <!--/////////////////////////////////////////////////////////////////////-->
 

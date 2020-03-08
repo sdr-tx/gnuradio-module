@@ -135,8 +135,8 @@
       <value>468000</value>
     </param>
     <param>
-      <key>clk_key</key>
-      <value>2</value>
+      <key>psk_fc_key</key>
+      <value>5000000</value>
     </param>
     <param>
       <key>comment</key>
@@ -156,7 +156,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(520, 228)</value>
+      <value>(560, 232)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -195,6 +195,14 @@
       <value>100000</value>
     </param>
     <param>
+      <key>psk_fs1M_key</key>
+      <value>25000</value>
+    </param>
+    <param>
+      <key>psk_fs5M_key</key>
+      <value>250000</value>
+    </param>
+    <param>
       <key>symtime_key</key>
       <value>500000</value>
     </param>
@@ -227,7 +235,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(104, 192)</value>
+      <value>(104, 176)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -435,7 +443,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(112, 100)</value>
+      <value>(104, 100)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -471,7 +479,7 @@
     </param>
     <param>
       <key>vector</key>
-      <value>(0, 1, 2, 3, 4, 5, 6, 7)</value>
+      <value>(0,1,2,3,4,5,6,7)</value>
     </param>
   </block>
   <connection>

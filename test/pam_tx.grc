@@ -101,7 +101,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(496, 12)</value>
+      <value>(304, 8)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -160,7 +160,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(760, 12)</value>
+      <value>(536, 8)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -219,7 +219,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(360, 12)</value>
+      <value>(184, 8)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -278,7 +278,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(624, 12)</value>
+      <value>(416, 8)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -371,8 +371,8 @@
       <value>1000000</value>
     </param>
     <param>
-      <key>clk_key</key>
-      <value>2</value>
+      <key>psk_fc_key</key>
+      <value>1600000</value>
     </param>
     <param>
       <key>comment</key>
@@ -384,7 +384,7 @@
     </param>
     <param>
       <key>duty_key</key>
-      <value>100</value>
+      <value>50</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -392,7 +392,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(496, 236)</value>
+      <value>(472, 232)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -431,12 +431,20 @@
       <value>96000</value>
     </param>
     <param>
+      <key>psk_fs1M_key</key>
+      <value>50000</value>
+    </param>
+    <param>
+      <key>psk_fs5M_key</key>
+      <value>50000</value>
+    </param>
+    <param>
       <key>symtime_key</key>
       <value>500000</value>
     </param>
     <param>
       <key>pammethod_key</key>
-      <value>natural_key</value>
+      <value>flat_key</value>
     </param>
     <param>
       <key>psk_key</key>
@@ -471,7 +479,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(144, 124)</value>
+      <value>(144, 176)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -534,7 +542,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(144, 348)</value>
+      <value>(144, 288)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -566,7 +574,7 @@
     </param>
     <param>
       <key>waveform</key>
-      <value>analog.GR_SIN_WAVE</value>
+      <value>analog.GR_COS_WAVE</value>
     </param>
   </block>
   <block>
@@ -593,7 +601,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(800, 264)</value>
+      <value>(728, 264)</value>
     </param>
     <param>
       <key>_rotation</key>
