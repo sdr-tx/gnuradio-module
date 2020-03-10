@@ -11,6 +11,10 @@
        * name
        * key (makes the value accessible as $keyname, e.g. in the make node)
        * type -->
+
+
+       
+ <!--///Modulation options///-->
     <param>
         <name>Modulation</name>
         <key>modulation_key</key>
@@ -37,11 +41,10 @@
             <name>PAM</name>
             <key>pam</key>
         </option>
-
     </param>
+    
 
-<!--//////////////////////////////////////////////////////////////////////-->
-
+ <!--///PSK modulations options///-->
     <param>
         <name>Type</name>
         <key>psk_key</key>
@@ -65,8 +68,7 @@
         </option>
     </param>
 
-
-<!--//////////////////////////////////////////////////////////////////////-->
+ <!--///PSK carrier frequency options///-->
     <param>
         <name>Carrier frequency </name>
         <key>psk_fc_key</key>
@@ -83,22 +85,16 @@
             <name>1 MHz</name>
             <key>1000000</key>
         </option>
-
     </param>
 
 
-<!--//////////////////////////////////////////////////////////////////////-->
-
-
-
-<!--//////////////////////////////////////////////////////////////////////-->
+ <!--///PSK sampling frequency options for 5MHz///-->
     <param>
         <name>Sampling frequency</name>
         <key>psk_fs5M_key</key>
         <value>50000</value>
         <type>int</type>
         <hide>#if $modulation_key() == "psk" and $psk_fc_key() == 5000000 then 'none' else 'all'#</hide>
-
 
         <option>
             <name>250 kHz</name>
@@ -119,20 +115,17 @@
             <name>25 kHz</name>
             <key>25000</key>
         </option>
-
-
     </param>
 
-<!--//////////////////////////////////////////////////////////////////////-->
 
-<!--//////////////////////////////////////////////////////////////////////-->
+
+ <!--///PSK carrier frequency options for 1MHz///-->
     <param>
         <name>Sampling frequency</name>
         <key>psk_fs1M_key</key>
         <value>50000</value>
         <type>int</type>
         <hide>#if $modulation_key() == "psk" and $psk_fc_key() == 1000000 then 'none' else 'all'#</hide>
-
 
         <option>
             <name>100 kHz</name>
@@ -148,16 +141,9 @@
             <name>25 kHz</name>
             <key>25000</key>
         </option>
-
-
-
     </param>
 
-<!--//////////////////////////////////////////////////////////////////////-->
-
-
-
-
+ <!--///AM N-Bits options///-->
     <param>
         <name>N Bits</name>
         <key>nbits_key</key>
@@ -168,7 +154,6 @@
         <option>
             <name>8</name>
             <key>8</key>
-
         </option>
     
         <option>
@@ -187,8 +172,8 @@
         </option>
     </param>
 
-<!--//////////////////////////////////////////////////////////////////////-->
 
+ <!--///AM carrier frequency options for 8bits///-->
         <param>
         <name>Carrier Frequency</name>
         <key>am_fc_8bits_key</key>
@@ -210,14 +195,10 @@
             <name>785.2 kHz</name>
             <key>pll_201</key>
         </option>
-
     </param>
 
 
-<!--//////////////////////////////////////////////////////////////////////-->
-
-<!--//////////////////////////////////////////////////////////////////////-->
-
+ <!--///AM carrier frequency options for 7bits///-->
         <param>
         <name>Carrier Frequency</name>
         <key>am_fc_7bits_key</key>
@@ -225,7 +206,6 @@
         <type>string</type>
         <hide>#if $modulation_key() == "am" and $nbits_key() == 7 then 'none' else 'all'#</hide>
 
-   
         <option>
             <name>392.6 kHz</name>
             <key>pll_50.25</key>
@@ -236,19 +216,14 @@
             <key>pll_100.5</key>
         </option>
 
-
         <option>
             <name>1.570 MHz</name>
             <key>pll_201</key>
         </option>
-
     </param>
 
 
-<!--//////////////////////////////////////////////////////////////////////-->
-
-<!--//////////////////////////////////////////////////////////////////////-->
-
+ <!--///AM carrier frequency options for 6bits///-->
         <param>
         <name>Carrier Frequency</name>
         <key>am_fc_6bits_key</key>
@@ -273,12 +248,7 @@
     </param>
 
 
-<!--//////////////////////////////////////////////////////////////////////-->
-
-
-
-<!--//////////////////////////////////////////////////////////////////////-->
-
+ <!--///AM carrier frequency options for 5bits///-->
         <param>
         <name>Carrier Frequency</name>
         <key>am_fc_5bits_key</key>
@@ -295,15 +265,11 @@
             <name>3.141 MHz</name>
             <key>pll_100.5</key>
         </option>
-
-
     </param>
 
 
 
-
-<!--//////////////////////////////////////////////////////////////////////-->
-
+ <!--///OOK carrier frequency///-->
     <param>
         <name>Carrier Frequency</name>
         <key>fc_key</key>
@@ -313,8 +279,8 @@
     </param>
 
 
-<!--//////////////////////////////////////////////////////////////////////-->
 
+ <!--///OOK symbol time///-->
     <param>
         <name>Symbol Time</name>
         <key>symtime_key</key>
@@ -324,11 +290,7 @@
     </param>
 
 
-
-  <!--//////////////////////////////////////////////////////////////////////-->
-
-
-
+ <!--///OOK sampling frequency///-->
     <param>
         <name>Sampling Frequency</name>
         <key>fs_key</key>
@@ -338,10 +300,8 @@
     </param>
 
 
- <!--/////////////////////////////////////////////////////////////////////-->
 
-
-
+ <!--///PAM types///-->
     <param>
         <name>Type PAM</name>
         <key>pammethod_key</key>
@@ -359,9 +319,10 @@
             <key>natural_key</key>
         </option>
     </param>
+    
+    
 
-
-
+ <!--///PAM methods///-->
     <param>
         <name>Method PAM</name>
         <key>pamtype_key</key>
@@ -387,8 +348,7 @@
 
 
 
- <!--/////////////////////////////////////////////////////////////////////-->
-
+ <!--///PAM sampling frequency///-->
     <param>
         <name>Sampling Frequency</name>
         <key>fs_pam_key</key>
@@ -400,9 +360,11 @@
             <name>96 kHz</name>
             <key>96000</key>
         </option>
-
     </param>
+    
 
+
+ <!--///PAM duty cycle///-->
     <param>
         <name>Duty Cycle(%)</name>
         <key>duty_key</key>
@@ -410,30 +372,15 @@
         <type>int</type>
         <hide>#if $modulation_key() == "pam" then 'none' else 'all'#</hide>
     </param>
+    
 
 <!-- Checks -->
     <!--/<check>$fs_pam_key == 100000</check> ///-->
     <check>$duty_key &gt;= 0</check>                    <!--/Mayor o igual/-->
     <check>$duty_key &lt;= 100</check>                  <!--/Menor o igual/-->
 
-<!--/////////////////////////////////////////////////////////////////////-->
 
-
- <!-- <param>
-    <name>Duty Cycle</name>
-    <key>duty_key</key>
-    <value>2</value>
-    <type>int</type>
-    <hide>#if $modulation_key() == "am" or $modulation_key() == "pam" then 'all' else 'none'#</hide>
-
-  </param> -->
-
-
-  <!-- Make one 'sink' node per input. Sub-nodes:
-       * name (an identifier for the GUI)
-       * type
-       * vlen
-       * optional (set to 1 for optional inputs) -->
+<!-- Sinks and sources -->
     <sink>
         <name>in_0</name>
         <type>float</type>
@@ -448,6 +395,5 @@
         <name>out</name>
         <type>float</type>
     </source>
-
 
 </block>
